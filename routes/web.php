@@ -3,16 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/home', function () {
-    return view('home');
+    return view('index');
 });
 
 Route::get('/terjemahkan', function () {
     return view('terjemahkan');
-});
+})->name('terjemahkan');
 
 Route::get('/bukukomunitas', function () {
     return view('bukukomunitas');
@@ -48,6 +44,10 @@ Route::get('/audiobook/detail/dengar', function () {
 
 Route::get('/artikel', function () {
     return view('artikel');
+});
+
+Route::get('/artikel/baca', function () {
+    return view('artikelbaca');
 });
 
 

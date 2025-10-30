@@ -9,3 +9,33 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+body { font-family: 'Inter', sans-serif; }
+
+.desktop-dropdown, .mobile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #F1EFEC;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 8px 0;
+  min-width: 150px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 1000;
+}
+.desktop-dropdown a, .mobile-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #05284C;
+  font-size: 14px;
+}
+.desktop-dropdown a:hover, .mobile-dropdown a:hover { 
+  background-color: #D4C9BE; 
+  color: #05284C; 
+}
+.desktop-dropdown a.logout, .mobile-dropdown a.logout { 
+  color: #FF0000; 
+}
