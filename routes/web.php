@@ -22,6 +22,22 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/admin/dashboard', function () {
+        // Cek jika role-nya BUKAN admin
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Akses Ditolak');
+        }
+
+        // Tampilkan view dashboard admin
+        return view('admin.dashboard');
+
+    })->name('admin.dashboard');
+
+    // ... rute admin lainnya ...
+});
+
 require __DIR__.'/auth.php';
 
 Route::get('/', function () {

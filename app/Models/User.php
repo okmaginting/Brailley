@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\CommunityStory; 
 use App\Models\ReadingHistory;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -47,6 +49,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Mengecek apakah user boleh mengakses Panel Admin.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Pastikan ini menggunakan '===' (tiga sama dengan)
+        // dan 'admin' (huruf kecil)
+        return $this->role === 'admin';
     }
 
 
