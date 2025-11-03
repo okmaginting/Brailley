@@ -105,10 +105,6 @@ Route::get('/bagikankarya/tuliskarya', function () {
     return view('tuliskarya');
 });
 
-Route::get('/bagikankarya/tuliskarya/tuliskaryanew', function () {
-    return view('tuliskaryanew');
-});
-
 Route::get('/bagikankarya/uploadkarya', function () {
     return view('uploadkarya');
 });

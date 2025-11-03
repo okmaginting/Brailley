@@ -2,72 +2,82 @@
 
 namespace App\Filament\Resources\CommunityStories\Schemas;
 
-// ↓↓↓ PASTIKAN 'use' INI LENGKAP ↓↓↓
+// (PASTIKAN SEMUA 'use' INI ADA)
+use App\Enums\CommunityStoryStatus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema; // Ini sudah benar (v4)
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Group; // Ini adalah namespace v4 yang benar
 
 class CommunityStoryForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                // ↓↓↓ JAUH LEBIH BAIK daripada TextInput untuk user_id
-                Select::make('user_id')
-                    ->relationship('user', 'name') // 'user' = nama relasi di Model, 'name' = kolom yg ditampilkan
-                    ->required()
-                    ->searchable()
-                    ->label('Penulis (Akun User)'),
+        return $schema->components([
+            
+            // --- BAGIAN KIRI (Info Cerita - READ ONLY) ---
+            Group::make()
+                ->schema([
+                    TextInput::make('judul')->disabled(),
+                    TextInput::make('penulis')->label('Nama Pena (Tampilan)')->disabled(),
+                    Select::make('user_id')
+                        ->relationship('user', 'name')
+                        ->label('Penulis (Akun User)')
+                        ->disabled(),
+                    TextInput::make('genre')->disabled(),
+                    Textarea::make('sipnosis')->columnSpanFull()->disabled(),
+                    
+                    FileUpload::make('upload_file')
+                        ->label('File Cerita (.docx) - (Hanya Unduh)')
+                        ->directory('story-documents')
+                        ->disabled()
+                        ->downloadable(),
 
-                TextInput::make('judul')
-                    ->required(),
-                TextInput::make('penulis')
-                    ->required()
-                    ->label('Nama Pena (Nama Tampilan)'),
-                TextInput::make('genre')
-                    ->required(),
-                Textarea::make('sipnosis')
-                    ->required()
-                    ->columnSpanFull(), // Lebar penuh
+                    RichEditor::make('isi_cerita')
+                        ->label('Isi Cerita (dari Text Editor)')
+                        ->columnSpanFull()
+                        ->disabled(),
+                    
+                    FileUpload::make('gambar_cerita')
+                        ->label('Gambar Cover')
+                        ->image()
+                        ->directory('story-covers')
+                        ->disabled(),
+                ])->columnSpan(8),
 
-                // ↓↓↓ DIUBAH DARI TextInput
-                FileUpload::make('gambar_cerita')
-                    ->label('Gambar Cover Cerita')
-                    ->image() // Validasi sbg gambar & beri preview
-                    ->directory('story-covers') // Folder di 'storage/app/public'
-                    ->imageEditor(),
+            
+            // --- BAGIAN KANAN (Aksi Admin - BISA DIEDIT) ---
+            Group::make()
+                ->schema([
+                    // 1. DROPDOWN STATUS
+                    Select::make('status')
+                        ->options(CommunityStoryStatus::class)
+                        ->required()
+                        ->default(CommunityStoryStatus::Pengecekan)
+                        ->live()
+                        ->label('Status Cerita'),
 
-                // ↓↓↓ DIUBAH DARI Textarea
-                RichEditor::make('isi_cerita')
-                    ->label('Isi Cerita (via Text Editor)')
-                    ->columnSpanFull(),
+                    // 2. UPLOAD FILE BRAILLE (.brf)
+                    FileUpload::make('braille_file')
+                        ->label('Upload File Braille (.brf)')
+                        ->directory('braille-files')
+                        ->preserveFilenames(),
+                        // BARIS ->visible(...) SUDAH DIHAPUS DARI SINI
 
-                // ↓↓↓ DIUBAH DARI TextInput
-                FileUpload::make('upload_file')
-                    ->label('Upload File Cerita (.docx)')
-                    ->directory('story-documents')
-                    ->acceptedFileTypes([
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        'application/msword', // Untuk .doc
-                    ])
-                    ->preserveFilenames(),
+                    // 3. UPLOAD MIRRORED IMAGE (.ZIP)
+                    FileUpload::make('braille_mirrored_image')
+                        ->label('Upload Mirrored Image (.zip)')
+                        ->directory('braille-zip')
+                        ->acceptedFileTypes(['application/zip'])
+                        ->preserveFilenames(),
+                        // BARIS ->visible(...) SUDAH DIHAPUS DARI SINI
 
-                // ↓↓↓ DIUBAH DARI TextInput
-                FileUpload::make('braille_file')
-                    ->label('Upload File Braille (.brf)')
-                    ->directory('braille-files')
-                    ->preserveFilenames(),
+                ])->columnSpan(4),
 
-                // Ini sudah benar, saya tambahkan label & directory
-                FileUpload::make('braille_mirrored_image')
-                    ->label('Gambar Cermin Braille')
-                    ->image()
-                    ->directory('braille-images')
-                    ->imageEditor(),
-            ]);
+        ])->columns(12);
     }
 }

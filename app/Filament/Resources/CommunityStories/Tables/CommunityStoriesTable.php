@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources\CommunityStories\Tables;
-
+use App\Enums\CommunityStoryStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -30,6 +30,17 @@ class CommunityStoriesTable
                     ->searchable(),
                 TextColumn::make('braille_file')
                     ->searchable(),
+                TextColumn::make('status')
+                    ->badge() // Ini akan membuatnya terlihat seperti 'badge'
+                    ->color(fn (\App\Enums\CommunityStoryStatus $state): string => match ($state) {
+                        CommunityStoryStatus::Pengecekan => 'gray',
+                        CommunityStoryStatus::Ditolak => 'danger',
+                        CommunityStoryStatus::Diterima => 'success',
+                        CommunityStoryStatus::Proses => 'warning',
+                        CommunityStoryStatus::Dipublish => 'primary',
+                    })
+                    ->searchable()
+                    ->sortable(),
                 ImageColumn::make('braille_mirrored_image'),
                 TextColumn::make('created_at')
                     ->dateTime()
