@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommunityStoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,12 +17,6 @@ Route::get('/', function () {
 // })->name('home');
 // // ->middleware(['auth', 'verified'])
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/admin/dashboard', function () {
@@ -35,7 +30,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     })->name('admin.dashboard');
 
-    // ... rute admin lainnya ...
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/karya/tulis', [CommunityStoryController::class, 'create'])->name('karya.create');
+    Route::post('/karya/submit', [CommunityStoryController::class, 'store'])->name('karya.store');
 });
 
 require __DIR__.'/auth.php';
