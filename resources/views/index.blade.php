@@ -5,9 +5,9 @@
 
 {{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
-  <section id="artikel" class="flex justify-center items-start px-6 md:px-10 pt-[180px]">
+  <section id="artikel" class="flex justify-center items-start px-6 md:px-10 pt-[160px]">
     <div class="bg-[#F1EFEC]  rounded-[40px] w-full max-w-6xl p-10 md:p-16 ">
-      <h2 class="text-3xl font-semibold text-black mb-10">Brailley Menu</h2>
+      <h2 class="text-3xl font-semibold text-black mb-10 text-center">Menu Utama</h2>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mb-6">
         <a href="/terjemahkan" class="block">
@@ -20,10 +20,10 @@
           </div>
         </a>
 
-        <a href="/bukukomunitas" class="block">
+        <a href="/ceritakomunitas" class="block">
           {{-- Diubah shadow-xl/20 menjadi shadow-lg DAN ditambahkan border --}}
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
-            <h3 class="text-base font-semibold text-black mb-2">Buku Komunitas</h3>
+            <h3 class="text-base font-semibold text-black mb-2">Cerita Komunitas</h3>
             <div class="flex items-center gap-2">
               <i data-lucide="book-text" class="w-5 h-5"></i>
             </div>

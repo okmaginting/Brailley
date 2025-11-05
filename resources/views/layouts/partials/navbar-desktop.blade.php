@@ -107,8 +107,8 @@
                 <a href="/terjemahkan" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ request()->is('terjemahkan*') ? 'text-[#05284C] font-bold' : '' }}">
                     <i data-lucide="arrow-left-right" class="w-5 h-5"></i>Terjemahkan
                 </a>
-                <a href="/bukukomunitas" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ request()->is('bukukomunitas*') ? 'text-[#05284C] font-bold' : '' }}">
-                    <i data-lucide="book-text" class="w-5 h-5"></i>Buku Komunitas
+                <a href="/ceritakomunitas" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ request()->is('ceritakomunitas*') ? 'text-[#05284C] font-bold' : '' }}">
+                    <i data-lucide="book-text" class="w-5 h-5"></i>Cerita Komunitas
                 </a>
                 <a href="/bukuresmi" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ request()->is('bukuresmi*') ? 'text-[#05284C] font-bold' : '' }}">
                     <i data-lucide="book-open" class="w-5 h-5"></i>Buku Resmi

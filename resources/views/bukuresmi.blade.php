@@ -6,125 +6,122 @@
 {{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
   <section id="bukuresmi" class="flex justify-center items-start px-6 md:px-10 pt-[180px] pb-20">
-    <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-7xl p-8 md:p-16 shadow-lg">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">Buku Resmi</h2>
-        <div class="flex items-center bg-white rounded-full px-3 py-1 shadow-sm w-full md:w-64">
-          <i data-lucide="search" class="w-5 h-5 text-gray-400 mr-2"></i>
-          <input type="text" placeholder="Cari buku..." class="w-full text-sm text-gray-700 outline-none bg-transparent">
+    <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-7xl p-8 md:p-16 shadow-xl">
+      
+      {{-- Header: Judul dan Search Bar --}}
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+        
+        {{-- Judul Halaman Dipercantik --}}
+        <h2 class="text-3xl md:text-4xl font-bold text-[#05284C] mb-6 md:mb-0">Buku Resmi</h2>
+        
+        {{-- Search Bar Dipercantik --}}
+        <div class="relative w-full md:w-80">
+            <i data-lucide="search" class="w-5 h-5 text-gray-400 shadow-xl absolute top-1/2 left-4 -translate-y-1/2 z-10"></i>
+            <input type="text" placeholder="Cari buku resmi..." class="w-full text-base text-gray-900 outline-none bg-white rounded-full py-3 pl-12 pr-4 shadow-sm border border-transparent focus:border-gray-300 focus:ring-1 focus:ring-gray-300 transition-all">
         </div>
+
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-  <!-- Card A -->
-  <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukuresmi/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">A</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
-          </div>
+      {{-- Grid Buku: 4 Kolom --}}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        {{-- Card Buku 1 (Template Baru) --}}
+        <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            
+            <!-- 1. Judul & Penulis -->
+            <div class="mb-4"> 
+                <h3 class="font-bold text-lg text-gray-900 truncate" title="Judul Buku A">Judul Buku A</h3>
+                <p class="text-sm text-gray-600">Nama Penulis A</p>
+            </div>
+    
+            <!-- 2. Gambar (Rasio 3:4) -->
+            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+                <img src="https://placehold.co/300x400/05284C/F1EFEC?text=Sampul+Buku" 
+                     alt="Sampul Buku A" 
+                     class="w-full h-full object-cover">
+            </div>
+    
+            <!-- 3. Tombol Detail -->
+            <div class="mt-auto"> {{-- mt-auto mendorong tombol ke bawah --}}
+                <a href="/bukuresmi/detail-a" class="block w-full bg-[#05284C] text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-opacity-90 transition-all duration-300">
+                    Lihat Detail
+                </a>
+            </div>
         </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
-      </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title A</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle A</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
-    </div>
-  </div>
 
-  <!-- Card B -->
-  <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukuresmi/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">B</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
-          </div>
+        {{-- Card Buku 2 (Template Baru) --}}
+        <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            
+            <!-- 1. Judul & Penulis -->
+            <div class="mb-4"> 
+                <h3 class="font-bold text-lg text-gray-900 truncate" title="Judul Buku B">Judul Buku B</h3>
+                <p class="text-sm text-gray-600">Nama Penulis B</p>
+            </div>
+    
+            <!-- 2. Gambar (Rasio 3:4) -->
+            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+                <img src="https://placehold.co/300x400/9333ea/F1EFEC?text=Sampul+Buku" 
+                     alt="Sampul Buku B" 
+                     class="w-full h-full object-cover">
+            </div>
+    
+            <!-- 3. Tombol Detail -->
+            <div class="mt-auto"> 
+                <a href="/bukuresmi/detail-b" class="block w-full bg-[#05284C] text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-opacity-90 transition-all duration-300">
+                    Lihat Detail
+                </a>
+            </div>
         </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
-      </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title B</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle B</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
-    </div>
-  </div>
 
-  <!-- Card C -->
-  <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukuresmi/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">C</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
-          </div>
+        {{-- Card Buku 3 (Template Baru) --}}
+        <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            
+            <!-- 1. Judul & Penulis -->
+            <div class="mb-4"> 
+                <h3 class="font-bold text-lg text-gray-900 truncate" title="Judul Buku C">Judul Buku C</h3>
+                <p class="text-sm text-gray-600">Nama Penulis C</p>
+            </div>
+    
+            <!-- 2. Gambar (Rasio 3:4) -->
+            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+                <img src="https://placehold.co/300x400/16a34a/F1EFEC?text=Sampul+Buku" 
+                     alt="Sampul Buku C" 
+                     class="w-full h-full object-cover">
+            </div>
+    
+            <!-- 3. Tombol Detail -->
+            <div class="mt-auto"> 
+                <a href="/bukuresmi/detail-c" class="block w-full bg-[#05284C] text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-opacity-90 transition-all duration-300">
+                    Lihat Detail
+                </a>
+            </div>
         </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
-      </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title C</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle C</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
-    </div>
-  </div>
-    <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukuresmi/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">C</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
-          </div>
+
+        {{-- Card Buku 4 (Template Baru) --}}
+        <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            
+            <!-- 1. Judul & Penulis -->
+            <div class="mb-4"> 
+                <h3 class="font-bold text-lg text-gray-900 truncate" title="Judul Buku D">Judul Buku D</h3>
+                <p class="text-sm text-gray-600">Nama Penulis D</p>
+            </div>
+    
+            <!-- 2. Gambar (Rasio 3:4) -->
+            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+                <img src="https://placehold.co/300x400/d97706/F1EFEC?text=Sampul+Buku" 
+                     alt="Sampul Buku D" 
+                     class="w-full h-full object-cover">
+            </div>
+    
+            <!-- 3. Tombol Detail -->
+            <div class="mt-auto"> 
+                <a href="/bukuresmi/detail-d" class="block w-full bg-[#05284C] text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-opacity-90 transition-all duration-300">
+                    Lihat Detail
+                </a>
+            </div>
         </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
+
       </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title C</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle C</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
     </div>
-  </div>
-</div>
   </section>
 @endsection

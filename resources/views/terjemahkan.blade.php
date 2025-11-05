@@ -5,7 +5,7 @@
 
 {{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
-<section id="terjemahkan" class="flex justify-center items-start px-6 md:px-10 pt-[180px]"> {{-- Tambah padding bottom untuk mobile nav --}}
+<section id="terjemahkan" class="flex justify-center items-start px-6 md:px-10 pt-[160px] pb-20 "> {{-- Tambah padding bottom untuk mobile nav --}}
     <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-6xl p-8 md:p-12 shadow-lg">
         
         <h2 class="text-3xl md:text-4xl font-bold text-[#1c1b1a] mb-8 text-center">Terjemahkan Ke Braille</h2>
@@ -14,7 +14,7 @@
             {{-- Kolom Input Teks --}}
             <div class="flex flex-col">
                 <label for="inputText" class="text-lg font-semibold mb-2">Enter Text</label>
-                <textarea id="inputText" rows="10" class="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" placeholder="Type or paste your text here..."></textarea>
+                <textarea id="inputText" rows="10" class="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg  transition duration-200" placeholder="Type or paste your text here..."></textarea>
             </div>
 
             {{-- Kolom Output Braille --}}

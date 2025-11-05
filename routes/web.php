@@ -48,11 +48,11 @@ Route::get('/terjemahkan', function () {
     return view('terjemahkan');
 })->name('terjemahkan');
 
-Route::get('/bukukomunitas', function () {
-    return view('bukukomunitas');
+Route::get('/ceritakomunitas', function () {
+    return view('ceritakomunitas');
 });
 
-Route::get('/bukukomunitas/detail', function () {
+Route::get('/ceritakomunitas/detail', function () {
     return view('komunitasdetail');
 });
 

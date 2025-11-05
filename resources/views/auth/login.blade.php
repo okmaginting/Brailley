@@ -5,7 +5,7 @@
 
 {{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
-    <section id="login" class="flex justify-center items-start px-6 md:px-10 pt-[120px] pb-20">
+    <section id="login" class="flex justify-center items-start px-6 md:px-10 pt-[160px] pb-20">
 <div class="bg-[#F1EFEC] rounded-[2rem] shadow-xl w-[95%] max-w-[70rem] px-16 py-12 text-center">
 
 {{-- Menampilkan status sesi (mis. 'Link reset password terkirim') --}}

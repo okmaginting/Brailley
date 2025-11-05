@@ -3,6 +3,36 @@
 {{-- Mengatur judul halaman --}}
 @section('title', 'Karya')
 
+{{-- Menambahkan CSS untuk EasyMDE (Editor Markdown) --}}
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+{{-- Style override agar editor menyatu dengan tema Tailwind --}}
+<style>
+  .editor-toolbar {
+    border-top-left-radius: 0.75rem; 
+    border-top-right-radius: 0.75rem;
+    border-color: #D1D5DB; 
+    background-color: #F9FAFB; 
+  }
+  .CodeMirror {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+    border-color: #D1D5DB; 
+    padding: 1rem; 
+    min-height: 250px; 
+  }
+  .CodeMirror-placeholder {
+    color: #9CA3AF !important;
+  }
+
+  .CodeMirror-fullscreen {
+    z-index: 9999 !important; 
+  }
+
+  .editor-toolbar.fullscreen {
+    z-index: 9999 !important;
+  }
+</style>
+
 {{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
   <section id="tuliskarya" class="flex justify-center items-start px-6 md:px-10 pt-[180px] pb-20">
@@ -58,7 +88,6 @@
         {{-- Sinopsis (Full-width) --}}
         <div class="flex flex-col mt-8">
           <label for="sipnosis" class="block text-gray-700 text-sm mb-2">Sinopsis</label>
-          {{-- DIUBAH: rows="16" -> rows="8" agar lebih proporsional --}}
           <textarea id="sipnosis" name="sipnosis" rows="8" class="w-full p-3 resize-none rounded-xl border border-gray-300 shadow-lg focus:ring-0 focus:shadow-xl focus:outline-none" required>{{ old('sipnosis') }}</textarea>
         </div>
 
@@ -68,8 +97,15 @@
           Silakan tulis cerita Anda di bawah ini, ATAU upload file .docx. (Isi salah satu)
         </p>
         <div class="flex flex-col mt-4">
-          <label for="isi_cerita" class="block text-gray-700 text-sm mb-3">Tulis Cerita di Sini</label>
-          <textarea id="isi_cerita" name="isi_cerita" rows="10" class="w-full p-4 resize-none rounded-xl border border-gray-300 shadow-lg focus:ring-0 focus:shadow-xl focus:outline-none">{{ old('isi_cerita') }}</textarea>
+          <label for="isi_cerita" class="block text-gray-700 text-sm mb-3">Tulis Cerita di Sini (Mendukung Markdown)</label>
+          
+          {{-- 
+            DIUBAH:
+            Textarea lama Anda dihapus class-nya. 
+            Script di bawah akan "mengambil alih" textarea ini dan 
+            mengubahnya menjadi Rich Text Editor.
+          --}}
+          <textarea id="isi_cerita" name="isi_cerita">{{ old('isi_cerita') }}</textarea>
         </div>
 
         {{-- TAMBAHAN: Field Upload .docx --}}
@@ -90,3 +126,30 @@
   </section>
 @endsection
 
+{{-- 
+  TAMBAHAN: Script untuk EasyMDE
+  Pastikan layout 'layouts.app' Anda memiliki `@stack('scripts')` 
+  sebelum tag penutup </body>
+--}}
+@push('scripts')
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var easyMDE = new EasyMDE({
+        element: document.getElementById('isi_cerita'), // Target textarea
+        spellChecker: false, // Matikan spell checker bawaan
+        minHeight: "250px",
+        placeholder: "Mulai tulis ceritamu di sini...",
+        // Toolbar yang disederhanakan
+        toolbar: [
+          "bold", "italic", "heading", "|", 
+          "quote", "unordered-list", "ordered-list", "|", 
+          "link", "|", 
+          "preview", "fullscreen", "|",
+          "undo", "redo"
+        ],
+        status: false, // Sembunyikan status bar (info baris/kata)
+      });
+    });
+  </script>
+@endpush

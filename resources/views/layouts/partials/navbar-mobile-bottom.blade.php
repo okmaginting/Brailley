@@ -58,9 +58,9 @@
                 <span class="truncate">Terjemah</span>
             </a>
 
-            <a href="/bukukomunitas" wire:navigate 
+            <a href="/ceritakomunitas" wire:navigate 
                class="flex flex-col items-center justify-center text-xs w-[16%] py-2 
-                      {{ request()->is('bukukomunitas*') ? 'bg-white shadow-lg border border-gray-300 rounded-xl text-[#05284C] font-bold' : 'text-gray-800' }}">
+                      {{ request()->is('ceritakomunitas*') ? 'bg-white shadow-lg border border-gray-300 rounded-xl text-[#05284C] font-bold' : 'text-gray-800' }}">
                 <i data-lucide="book-text" class="w-5 h-5 mb-1"></i>
                 <span class="truncate">Komunitas</span>
             </a>
