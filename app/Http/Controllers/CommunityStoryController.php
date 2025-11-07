@@ -11,6 +11,61 @@ use App\Http\Controllers\Controller;
 
 class CommunityStoryController extends Controller
 {
+    public function index(Request $request) // <-- 3. Tambahkan Request
+    {
+        $query = CommunityStory::where('status', CommunityStoryStatus::Dipublish);
+
+        // 4. Tambahkan logika pencarian
+        if ($request->has('search') && $request->search != '') {
+            $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        // 5. Ambil data, urutkan dari terbaru, dan paginasi (12 per halaman)
+        $stories = $query->latest()->paginate(12);
+
+        // 6. Kirim data ke view
+        return view('ceritakomunitas', [
+            'stories' => $stories
+        ]);
+    }
+
+    public function show($id)
+    {
+        // 1. Ambil cerita berdasarkan ID
+        // 2. Pastikan ceritanya ada (firstOrFail)
+        // 3. Pastikan statusnya "Dipublish" (agar draf tidak bocor)
+        $story = CommunityStory::where('status', CommunityStoryStatus::Dipublish)
+                                ->where('id', $id)
+                                ->firstOrFail(); // Akan otomatis 404 jika tidak ditemukan
+
+        // 4. Kirim data ke view
+        return view('komunitasdetail', [
+            'story' => $story
+        ]);
+    }
+
+    public function read($id)
+    {
+        $story = CommunityStory::where('status', CommunityStoryStatus::Dipublish)
+                                ->where('id', $id)
+                                ->firstOrFail();
+
+        $content = "";
+
+        // HANYA cek 'isi_cerita'
+        if (!empty($story->isi_cerita)) {
+            $content = $story->isi_cerita;
+        } else {
+            // Jika 'isi_cerita' kosong (misal: user upload .docx),
+            // tampilkan pesan ini.
+            $content = "Konten cerita ini tidak tersedia untuk dibaca secara online (hanya tersedia melalui file unduhan).";
+        }
+
+        return view('komunitasbaca', [
+            'story' => $story,
+            'content' => $content
+        ]);
+    }
     /**
      * Menampilkan halaman form untuk menulis karya.
      * (Asumsi nama file Blade Anda adalah 'tuliskarya.blade.php')
@@ -70,4 +125,6 @@ class CommunityStoryController extends Controller
         // Arahkan ke dashboard atau halaman 'karya saya' dengan pesan sukses
         return redirect('/bagikankarya')->with('success', 'Karya Anda berhasil dikirim dan sedang ditinjau!');
     }
+
+    
 }

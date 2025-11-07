@@ -72,7 +72,6 @@ class CommunityStoryForm
                     FileUpload::make('braille_mirrored_image')
                         ->label('Upload Mirrored Image (.zip)')
                         ->directory('braille-zip')
-                        ->acceptedFileTypes(['application/zip'])
                         ->preserveFilenames(),
                         // BARIS ->visible(...) SUDAH DIHAPUS DARI SINI
 

@@ -20,12 +20,17 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/admin/dashboard', function () {
-        // Cek jika role-nya BUKAN admin
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Akses Ditolak');
         }
+        return view('admin.dashboard');
 
-        // Tampilkan view dashboard admin
+    })->name('admin.dashboard');
+
+    Route::get('/admin/login', function () {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Akses Ditolak');
+        }
         return view('admin.dashboard');
 
     })->name('admin.dashboard');
@@ -48,17 +53,18 @@ Route::get('/terjemahkan', function () {
     return view('terjemahkan');
 })->name('terjemahkan');
 
-Route::get('/ceritakomunitas', function () {
-    return view('ceritakomunitas');
-});
-
-Route::get('/ceritakomunitas/detail', function () {
-    return view('komunitasdetail');
-});
-
-Route::get('/bukukomunitas/detail/baca', function () {
-    return view('komunitasbaca');
-});
+// Route::get('/ceritakomunitas', function () {
+//     return view('ceritakomunitas');
+// });
+// Route::get('/ceritakomunitas/detail', function () {
+//     return view('komunitasdetail');
+// });
+// Route::get('/ceritakomunitas/baca', function () {
+//     return view('komunitasbaca');
+// });
+Route::get('/ceritakomunitas', [CommunityStoryController::class, 'index'])->name('karya.index');
+Route::get('/ceritakomunitas/{id}', [CommunityStoryController::class, 'show'])->name('karya.show');
+Route::get('/ceritakomunitas/{id}/baca', [CommunityStoryController::class, 'read'])->name('karya.read');
 
 Route::get('/bukuresmi', function () {
     return view('bukuresmi');
@@ -103,10 +109,6 @@ Route::get('/bagikankarya', function () {
 
 Route::get('/bagikankarya/tuliskarya', function () {
     return view('tuliskarya');
-});
-
-Route::get('/bagikankarya/uploadkarya', function () {
-    return view('uploadkarya');
 });
 
 Route::get('/karyasaya', function () {

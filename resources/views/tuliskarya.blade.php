@@ -99,12 +99,6 @@
         <div class="flex flex-col mt-4">
           <label for="isi_cerita" class="block text-gray-700 text-sm mb-3">Tulis Cerita di Sini (Mendukung Markdown)</label>
           
-          {{-- 
-            DIUBAH:
-            Textarea lama Anda dihapus class-nya. 
-            Script di bawah akan "mengambil alih" textarea ini dan 
-            mengubahnya menjadi Rich Text Editor.
-          --}}
           <textarea id="isi_cerita" name="isi_cerita">{{ old('isi_cerita') }}</textarea>
         </div>
 
@@ -126,11 +120,6 @@
   </section>
 @endsection
 
-{{-- 
-  TAMBAHAN: Script untuk EasyMDE
-  Pastikan layout 'layouts.app' Anda memiliki `@stack('scripts')` 
-  sebelum tag penutup </body>
---}}
 @push('scripts')
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <script>
