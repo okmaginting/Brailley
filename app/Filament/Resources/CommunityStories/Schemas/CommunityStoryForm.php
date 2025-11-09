@@ -64,16 +64,16 @@ class CommunityStoryForm
                     // 2. UPLOAD FILE BRAILLE (.brf)
                     FileUpload::make('braille_file')
                         ->label('Upload File Braille (.brf)')
+                        ->disk('public') // <-- TAMBAHKAN INI
                         ->directory('braille-files')
                         ->preserveFilenames(),
-                        // BARIS ->visible(...) SUDAH DIHAPUS DARI SINI
 
                     // 3. UPLOAD MIRRORED IMAGE (.ZIP)
                     FileUpload::make('braille_mirrored_image')
                         ->label('Upload Mirrored Image (.zip)')
+                        ->disk('public') // <-- TAMBAHKAN INI
                         ->directory('braille-zip')
-                        ->preserveFilenames(),
-                        // BARIS ->visible(...) SUDAH DIHAPUS DARI SINI
+                        ->preserveFilenames(),      
 
                 ])->columnSpan(4),
 

@@ -12,11 +12,6 @@ Route::get('/', function () {
     return view('/');
 })->middleware(['auth', 'verified'])->name('home');
 
-// Route::get('/', function () {
-//     return view('index');
-// })->name('home');
-// // ->middleware(['auth', 'verified'])
-
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/admin/dashboard', function () {
@@ -34,6 +29,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('admin.dashboard');
 
     })->name('admin.dashboard');
+
+    Route::get('/admin/login', function () {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Akses Ditolak');
+        }
+        return view('admin.dashboard');
+
+    })->name('admin.dashboard');
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
