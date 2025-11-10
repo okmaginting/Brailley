@@ -77,5 +77,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(ReadingHistory::class);
     }
+    public function downloadHistory()
+    {
+        return $this->hasMany(DownloadHistory::class);
+    }
     
 }

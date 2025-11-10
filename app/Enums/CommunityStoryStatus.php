@@ -11,6 +11,7 @@ enum CommunityStoryStatus: string implements HasLabel
     case Diterima = 'diterima';
     case Proses = 'proses';
     case Dipublish = 'dipublish';
+    case RequestHapus = 'request_hapus';
 
     public function getLabel(): ?string
     {
@@ -20,6 +21,7 @@ enum CommunityStoryStatus: string implements HasLabel
             self::Diterima => 'Diterima (Menunggu Proses)',
             self::Proses => 'Dalam Proses (Pembuatan Braille)',
             self::Dipublish => 'Sudah Dipublish',
+            self::RequestHapus => 'Minta Hapus (Menunggu Persetujuan)',
         };
     }
 }

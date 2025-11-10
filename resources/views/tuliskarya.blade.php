@@ -42,17 +42,18 @@
         <p class="text-2xl font-semibold text-[#000] mt-1">Tulis Karya</p>
       </div>
 
-      {{-- Menampilkan error validasi --}}
-      @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-5" role="alert">
-          <strong class="font-bold">Oops! Ada yang salah:</strong>
-          <ul class="mt-2 list-disc list-inside">
-              @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-              @endforeach
-          </ul>
-        </div>
-      @endif
+      {{-- ↓↓↓ TAMBAHKAN BLOK INI UNTUK MENAMPILKAN ERROR ↓↓↓ --}}
+      @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
+          <strong class="font-bold">Oops! Ada yang salah:</strong>
+          <ul class="mt-2 list-disc list-inside">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+          </ul>
+        </div>
+      @endif
+      {{-- --- AKHIR BLOK --- --}}
 
       <form action="{{ route('karya.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col">
         @csrf

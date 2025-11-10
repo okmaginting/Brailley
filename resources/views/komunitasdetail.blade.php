@@ -38,7 +38,7 @@
             
             {{-- Tombol Download .BRF --}}
             @if ($story->braille_file)
-              <a href="{{ asset('storage/' . $story->braille_file) }}" 
+              <a href="{{ route('file.download', ['id' => $story->id, 'type' => 'brf']) }}" 
                  download 
                  class="flex items-center gap-2 border border-[#05284C] text-[#05284C] px-6 py-2.5 rounded-lg font-semibold hover:bg-[#05284C] hover:text-white transition-all">
                 <i data-lucide="download" class="w-5 h-5"></i>
@@ -48,7 +48,7 @@
 
             {{-- Tombol Download .ZIP --}}
             @if ($story->braille_mirrored_image)
-              <a href="{{ asset('storage/'. $story->braille_mirrored_image) }}" 
+              <a href="{{ route('file.download', ['id' => $story->id, 'type' => 'zip']) }}" 
                  download 
                  class="flex items-center gap-2 border border-[#05284C] text-[#05284C] px-6 py-2.5 rounded-lg font-semibold hover:bg-[#05284C] hover:text-white transition-all">
                 <i data-lucide="file-archive" class="w-5 h-5"></i>

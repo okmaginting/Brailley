@@ -1,104 +1,102 @@
 @extends('layouts.app')
 
-{{-- Mengatur judul halaman --}}
-@section('title', 'Terjemahkan ke Braille')
+@section('title', 'Riwayat Unduh')
 
-{{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
   <section id="riwayatunduh" class="flex justify-center items-start px-6 md:px-10 pt-[180px] pb-20">
     <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-7xl p-8 md:p-16 shadow-lg">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">Riwayat Unduh</h2>
-        <div class="flex items-center bg-white rounded-full px-3 py-1 shadow-sm w-full md:w-64">
-          <i data-lucide="search" class="w-5 h-5 text-gray-400 mr-2"></i>
-          <input type="text" placeholder="Cari buku..." class="w-full text-sm text-gray-700 outline-none bg-transparent">
-        </div>
+      
+      {{-- Header: Judul dan Search Bar --}}
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#05284C] mb-6 md:mb-0">Riwayat Unduh</h2>
+        
+        {{-- Search Bar Fungsional --}}
+        <form action="{{ route('history.download') }}" method="GET" class="relative w-full md:w-80">
+          <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute top-1/2 left-4 -translate-y-1/2 z-10"></i>
+          <input 
+            type="text" 
+            name="search"
+            placeholder="Cari riwayat unduh..." 
+            class="w-full text-base text-gray-900 outline-none bg-white rounded-full py-3 pl-12 pr-4 shadow-sm border border-transparent focus:border-gray-300 focus:ring-1 focus:ring-gray-300 transition-all"
+            value="{{ request('search') }}"
+          >
+        </form>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-  <!-- Card A -->
-  <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukukomunitas/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">A</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
-          </div>
-        </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
-      </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title A</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle A</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
-    </div>
-  </div>
+      {{-- Grid Riwayat Unduh: 4 Kolom --}}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-  <!-- Card B -->
-  <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukukomunitas/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">B</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
-          </div>
-        </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
-      </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title B</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle B</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
-    </div>
-  </div>
+      @forelse ($historyItems as $item)
+        {{-- Lewati jika item aslinya (buku/cerita) telah dihapus --}}
+        @if (!$item->downloadable)
+          @continue
+        @endif
 
-  <!-- Card C -->
-  <div class="bg-white rounded-2xl shadow p-4 flex flex-col hover:shadow-lg transition cursor-pointer">
-    <a href="/bukukomunitas/detail" class="block">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">C</div>
-          <div>
-            <p class="text-sm font-semibold text-gray-700">Header</p>
-            <p class="text-xs text-gray-500">Subhead</p>
+        <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+          
+          {{-- Bagian Atas: Judul, Tipe File & Waktu --}}
+          <div class="mb-4">
+             <div class="flex justify-between items-start mb-2">
+                <h3 class="font-bold text-lg text-gray-900 truncate flex-1 pr-2" title="{{ $item->title }}">
+                  {{ $item->title }}
+                </h3>
+                {{-- Badge Tipe File --}}
+                <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-bold
+                   @if($item->file_type === 'brf') bg-blue-100 text-blue-800
+                   @elseif($item->file_type === 'zip') bg-purple-100 text-purple-800
+                   @else bg-gray-100 text-gray-800 @endif">
+                  {{ strtoupper($item->file_type) }}
+                </span>
+             </div>
+             <p class="text-xs text-gray-500 flex items-center">
+               <i data-lucide="download-cloud" class="w-3 h-3 mr-1"></i>
+               {{ $item->created_at->diffForHumans() }}
+             </p>
           </div>
+          
+          {{-- Bagian Tengah: Gambar Cover (Rasio 3:4) --}}
+          {{-- Link pembungkus ke detail --}}
+          <a href="{{ $item->detail_url }}" class="block relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+             <img src="{{ $item->cover_image_url }}" 
+                  alt="Cover {{ $item->title }}" 
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          </a>
+          
+          {{-- Bagian Bawah: Tombol Aksi --}}
+          <div class="mt-auto flex gap-2">
+            {{-- Tombol Detail --}}
+            <a href="{{ $item->detail_url }}" class="flex-1 flex items-center justify-center border border-gray-300 text-gray-700 rounded-lg py-2 text-sm font-semibold hover:bg-gray-50 transition-all">
+               Detail
+            </a>
+            {{-- Tombol Unduh Lagi --}}
+            <a href="{{ $item->download_url }}" class="flex-1 flex items-center justify-center bg-[#05284C] text-white rounded-lg py-2 text-sm font-semibold hover:bg-opacity-90 transition-all">
+               Unduh Lagi
+            </a>
+          </div>
+
         </div>
-        <i data-lucide="more-vertical" class="w-5 h-5 text-gray-400"></i>
+      
+      @empty
+        <div class="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-12">
+            <i data-lucide="download" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-700">Riwayat Unduh Kosong</h3>
+            <p class="text-gray-500 mt-1">
+              @if (request('search'))
+                Riwayat unduh dengan judul "{{ request('search') }}" tidak ditemukan.
+              @else
+                Anda belum mengunduh file apapun.
+              @endif
+            </p>
+          </div>
+      @endforelse
+
+      </div> {{-- Akhir Grid --}}
+
+      {{-- Link Pagination --}}
+      <div class="mt-12">
+        {{ $historyItems->links() }}
       </div>
-      <div class="flex justify-center items-center h-32 bg-gray-100 rounded mb-4">
-        <div class="w-12 h-12 bg-gray-300"></div>
-        <div class="w-8 h-8 bg-gray-400 ml-2"></div>
-        <div class="w-6 h-6 bg-gray-500 ml-2"></div>
-      </div>
-      <h3 class="font-semibold text-lg mb-1">Title C</h3>
-      <p class="text-sm text-gray-500 mb-2">Subtitle C</p>
-      <p class="text-sm text-gray-700 flex-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
-    </a>
-    <div class="mt-4 flex justify-end gap-2">
-      <button class="border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">Secondary</button>
-      <a href="#" class="bg-purple-600 text-white rounded-full px-3 py-1 text-sm hover:bg-purple-700 transition">Primary</a>
+
     </div>
-  </div>
-</div>
   </section>
 @endsection

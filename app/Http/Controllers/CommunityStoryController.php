@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CommunityStory;
 use App\Enums\CommunityStoryStatus;
+use App\Models\ReadingHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -52,6 +53,19 @@ class CommunityStoryController extends Controller
 
         $content = "";
 
+        if (Auth::check()) {
+            // Ini akan membuat data baru jika belum ada,
+            // atau memperbarui 'updated_at' jika sudah ada.
+            ReadingHistory::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'readable_id' => $story->id,
+                    'readable_type' => CommunityStory::class,
+                ],
+                [] // 'updated_at' akan diperbarui secara otomatis
+            );
+        }
+
         // HANYA cek 'isi_cerita'
         if (!empty($story->isi_cerita)) {
             $content = $story->isi_cerita;
@@ -73,6 +87,26 @@ class CommunityStoryController extends Controller
     public function create()
     {
         return view('tuliskarya');
+    }
+
+    public function myWorks(Request $request)
+    {
+        // 1. Mulai query dari relasi user.
+        // Ini secara otomatis hanya akan mengambil cerita milik user yang login.
+        $query = Auth::user()->communityStories();
+
+        // 2. Tambahkan logika pencarian
+        if ($request->has('search') && $request->search != '') {
+            $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        // 3. Ambil data, urutkan dari terbaru, dan paginasi (12 per halaman)
+        $stories = $query->latest()->paginate(12);
+
+        // 4. Kirim data ke view 'karyasaya'
+        return view('karyasaya', [
+            'stories' => $stories
+        ]);
     }
 
     /**
@@ -124,6 +158,21 @@ class CommunityStoryController extends Controller
         // --- 4. ALIHKAN PENGGUNA ---
         // Arahkan ke dashboard atau halaman 'karya saya' dengan pesan sukses
         return redirect('/bagikankarya')->with('success', 'Karya Anda berhasil dikirim dan sedang ditinjau!');
+    }
+
+    public function requestDelete(CommunityStory $story)
+    {
+        // 1. Pastikan user ini pemilik cerita
+        if (Auth::id() !== $story->user_id) {
+            abort(403, 'Anda tidak diizinkan melakukan aksi ini.');
+        }
+
+        // 2. Ubah statusnya
+        $story->status = CommunityStoryStatus::RequestHapus;
+        $story->save();
+
+        // 3. Kembalikan ke halaman "Karya Saya"
+        return redirect()->route('karya.mine')->with('success', 'Permintaan hapus telah dikirim dan akan ditinjau oleh Admin.');
     }
 
     

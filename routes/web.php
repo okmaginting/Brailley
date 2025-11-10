@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommunityStoryController;
+use App\Http\Controllers\ReadingHistoryController;
+use App\Http\Controllers\FileDownloadController;
+use App\Http\Controllers\DownloadHistoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,6 +41,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     })->name('admin.dashboard');
 
+    
+
+    Route::get('/riwayatbaca', [ReadingHistoryController::class, 'index'])->name('history.index');
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -45,6 +52,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/karya/tulis', [CommunityStoryController::class, 'create'])->name('karya.create');
     Route::post('/karya/submit', [CommunityStoryController::class, 'store'])->name('karya.store');
+    Route::get('/karyasaya', [CommunityStoryController::class, 'myWorks'])->name('karya.mine');
+    Route::post('/karya/{story}/request-delete', [CommunityStoryController::class, 'requestDelete'])->name('karya.requestDelete');
+    
+
+    Route::get('/download/story/{id}/{type}', [FileDownloadController::class, 'downloadCommunityFile'])
+    ->whereIn('type', ['brf', 'zip']) // Hanya izinkan brf atau zip
+    ->name('file.download');
+    Route::get('/riwayatunduh', [DownloadHistoryController::class, 'index'])->name('history.download');
 });
 
 require __DIR__.'/auth.php';
@@ -98,23 +113,10 @@ Route::get('/artikel/baca', function () {
     return view('artikelbaca');
 });
 
-
-Route::get('/riwayatbaca', function () {
-    return view('riwayatbaca');
-});
-
-Route::get('/riwayatunduh', function () {
-    return view('riwayatunduh');
-});
-
 Route::get('/bagikankarya', function () {
     return view('bagikankarya');
 });
 
 Route::get('/bagikankarya/tuliskarya', function () {
     return view('tuliskarya');
-});
-
-Route::get('/karyasaya', function () {
-    return view('karyasaya');
 });

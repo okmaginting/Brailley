@@ -38,6 +38,7 @@ class CommunityStoriesTable
                         CommunityStoryStatus::Diterima => 'success',
                         CommunityStoryStatus::Proses => 'warning',
                         CommunityStoryStatus::Dipublish => 'primary',
+                        CommunityStoryStatus::RequestHapus => 'danger',
                     })
                     ->searchable()
                     ->sortable(),
