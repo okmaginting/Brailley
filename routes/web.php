@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommunityStoryController;
+use App\Http\Controllers\OfficialBookController;
+use App\Http\Controllers\OfficialBookLinkController;
+use App\Http\Controllers\AudiobookController;
 use App\Http\Controllers\ReadingHistoryController;
 use App\Http\Controllers\FileDownloadController;
 use App\Http\Controllers\DownloadHistoryController;
@@ -55,11 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/karyasaya', [CommunityStoryController::class, 'myWorks'])->name('karya.mine');
     Route::post('/karya/{story}/request-delete', [CommunityStoryController::class, 'requestDelete'])->name('karya.requestDelete');
     
-
     Route::get('/download/story/{id}/{type}', [FileDownloadController::class, 'downloadCommunityFile'])
-    ->whereIn('type', ['brf', 'zip']) // Hanya izinkan brf atau zip
-    ->name('file.download');
+            ->whereIn('type', ['brf', 'zip']) // Hanya izinkan brf atau zip
+            ->name('file.download');
     Route::get('/riwayatunduh', [DownloadHistoryController::class, 'index'])->name('history.download');
+
+    Route::get('/bukuresmi/{id}/visit', [OfficialBookLinkController::class, 'visit'])->name('bukuresmi.visit');
 });
 
 require __DIR__.'/auth.php';
@@ -72,29 +76,19 @@ Route::get('/terjemahkan', function () {
     return view('terjemahkan');
 })->name('terjemahkan');
 
-// Route::get('/ceritakomunitas', function () {
-//     return view('ceritakomunitas');
-// });
-// Route::get('/ceritakomunitas/detail', function () {
-//     return view('komunitasdetail');
-// });
-// Route::get('/ceritakomunitas/baca', function () {
-//     return view('komunitasbaca');
-// });
 Route::get('/ceritakomunitas', [CommunityStoryController::class, 'index'])->name('karya.index');
 Route::get('/ceritakomunitas/{id}', [CommunityStoryController::class, 'show'])->name('karya.show');
 Route::get('/ceritakomunitas/{id}/baca', [CommunityStoryController::class, 'read'])->name('karya.read');
 
-Route::get('/bukuresmi', function () {
-    return view('bukuresmi');
-});
+Route::get('/bukuresmi', [OfficialBookController::class, 'index'])->name('bukuresmi.index');
+Route::get('/bukuresmi/{id}', [OfficialBookController::class, 'show'])->name('bukuresmi.show');
+
+Route::get('/audiobook', [AudiobookController::class, 'index'])->name('audiobook.index');
+
+
 
 Route::get('/bukuresmi/detail', function () {
     return view('bukuresmidetail');
-});
-
-Route::get('/audiobook', function () {
-    return view('audiobook');
 });
 
 Route::get('/audiobook/detail', function () {

@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('official_books', function (Blueprint $table) {
+            // Tambahkan kolom baru setelah 'penulis'
+            $table->string('penerbit')->nullable()->after('penulis');
+            $table->string('isbn')->nullable()->after('penerbit');
+            $table->string('edisi')->nullable()->after('isbn');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('official_books', function (Blueprint $table) {
+            // Ini untuk 'undo' jika diperlukan
+            $table->dropColumn(['penerbit', 'isbn', 'edisi']);
+        });
+    }
+};

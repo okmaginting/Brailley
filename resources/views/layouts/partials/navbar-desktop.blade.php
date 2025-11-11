@@ -51,7 +51,15 @@
             <div class="flex-shrink-0 whitespace-nowrap px-8">
                 @guest
                     <div class="flex items-center gap-x-10">
-                        <a href="{{ route('login') }}" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ request()->is('login*') ? 'text-[#05284C] font-bold' : '' }}">
+                        <a href="{{ route('login') }}" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ 
+                            request()->is([
+                                'login*', 
+                                'forgot-password*', 
+                                'verify-email*', 
+                                'reset-password*', 
+                                'confirm-password*'
+                            ]) ? 'text-[#05284C] font-bold' : '' 
+                        }}">
                             <i data-lucide="log-in" class="w-5 h-5"></i>Login
                         </a>
                         <a href="{{ route('register') }}" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] {{ request()->is('register*') ? 'text-[#05284C] font-bold' : '' }}">
@@ -123,10 +131,6 @@
                     <i data-lucide="share-2" class="w-5 h-5"></i>Bagikan Karya
                 </a>
             </div>
-
-            {{-- ================================================ --}}
-            {{-- == PERUBAHAN KEDUA: LOGIKA KONDISI 2 (KANAN) == --}}
-            {{-- ================================================ --}}
             <div class="relative">
                 @auth
                     {{-- Cek role ditambahkan di sini juga --}}

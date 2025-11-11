@@ -3,7 +3,7 @@
 namespace App\Http;
 namespace App\Http\Controllers;
 
-use App\Models\CommunityStory; // (Perlu untuk pencarian)
+use App\Models\CommunityStory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

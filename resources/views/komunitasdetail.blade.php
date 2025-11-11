@@ -6,19 +6,7 @@
 @section('content')
   <section id="karya-detail" class="flex justify-center items-start px-6 md:px-10 pt-[180px] pb-20">
     <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-7xl p-8 md:p-16 shadow-lg">
-      
-      {{-- 
-        PERBAIKAN TATA LETAK:
-        - 'flex-col-reverse' -> Gambar di atas di (Mobile)
-        - 'md:flex-row' -> Teks di kiri, Gambar di kanan (Desktop)
-        - 'justify-center' -> MEMPUSATKAN kedua kolom di desktop.
-        - 'items-start' -> Mencegah kolom meregang secara vertikal.
-      --}}
       <div class="flex flex-col-reverse md:flex-row items-start justify-center gap-10 md:gap-16">
-
-        {{-- ================================== --}}
-        {{-- KOLOM KIRI (Desktop) / BAWAH (Mobile) --}}
-        {{-- ================================== --}}
         {{-- Lebar kolom teks diatur agar nyaman dibaca --}}
         <div class="w-full md:max-w-prose">
           
@@ -68,16 +56,6 @@
           </div>
 
         </div>
-
-        {{-- =================================== --}}
-        {{-- KOLOM KANAN (Desktop) / ATAS (Mobile) --}}
-        {{-- =================================== --}}
-        {{-- 
-          PERBAIKAN: 
-          - 'flex-shrink-0' dijaga agar tidak menyusut.
-          - 'justify-center' ditambahkan untuk mobile.
-          - 'w-full md:w-auto' -> Responsif
-        --}}
         <div class="flex-shrink-0 flex justify-center w-full md:w-auto">
           {{-- Wrapper untuk ukuran konstan --}}
           <div class="w-full max-w-[340px] md:w-[340px] flex-shrink-0">
@@ -94,17 +72,10 @@
           </div>
         </div>
 
-      </div> {{-- Akhir dari Flexbox 2 Kolom --}}
-
-
-      {{-- ================================== --}}
-      {{-- BAGIAN SINOPSIS (TERPISAH) --}}
-      {{-- ================================== --}}
+      </div>
       <div class="mt-12 pt-8 border-t border-gray-300">
         <h3 class="text-2xl font-bold text-gray-900 mb-2">Sinopsis</h3>
         <div class="text-base text-gray-700 leading-relaxed whitespace-pre-line prose max-w-none">
-          {{-- 'whitespace-pre-line' menjaga baris baru dari sinopsis --}}
-          {{-- 'prose' untuk styling teks otomatis, 'max-w-none' membatalkan batasan lebar prose --}}
           <p>{{ $story->sipnosis ?? 'Sinopsis tidak tersedia.' }}</p>
         </div>
       </div>
