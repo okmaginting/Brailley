@@ -5,6 +5,7 @@ use App\Http\Controllers\CommunityStoryController;
 use App\Http\Controllers\OfficialBookController;
 use App\Http\Controllers\OfficialBookLinkController;
 use App\Http\Controllers\AudiobookController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ReadingHistoryController;
 use App\Http\Controllers\FileDownloadController;
 use App\Http\Controllers\DownloadHistoryController;
@@ -52,7 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    
     Route::get('/karya/tulis', [CommunityStoryController::class, 'create'])->name('karya.create');
     Route::post('/karya/submit', [CommunityStoryController::class, 'store'])->name('karya.store');
     Route::get('/karyasaya', [CommunityStoryController::class, 'myWorks'])->name('karya.mine');
@@ -71,6 +72,11 @@ Route::get('/terjemahkan', function () {
     return view('terjemahkan');
 })->name('terjemahkan');
 
+Route::get('/bagikankarya', function () {
+    return view('bagikankarya');
+})->name('karya.start');
+
+
 Route::get('/ceritakomunitas', [CommunityStoryController::class, 'index'])->name('karya.index');
 Route::get('/ceritakomunitas/{id}', [CommunityStoryController::class, 'show'])->name('karya.show');
 Route::get('/ceritakomunitas/{id}/baca', [CommunityStoryController::class, 'read'])->name('karya.read');
@@ -87,10 +93,5 @@ Route::get('/audiobook/{id}', [AudiobookController::class, 'show'])->name('audio
 Route::get('/audiobook/{id}/listen', [AudiobookController::class, 'listen'])->name('audiobook.listen');
 Route::get('/download/audiobook/{id}', [FileDownloadController::class, 'downloadAudiobook'])->name('audiobook.download');
 
-Route::get('/artikel', function () {
-    return view('artikel');
-});
-
-Route::get('/artikel/baca', function () {
-    return view('artikelbaca');
-});
+Route::get('/artikel', [ArticleController::class, 'index'])->name('artikel.index');
+Route::get('/artikel/{id}', [ArticleController::class, 'show'])->name('artikel.show');

@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 
 class ArticlesTable
 {
@@ -14,28 +15,28 @@ class ArticlesTable
     {
         return $table
             ->columns([
+                ImageColumn::make('gambar')
+                    ->label('Gambar')
+                    ->square(),
                 TextColumn::make('judul')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50), // Batasi panjang teks
                 TextColumn::make('penulis')
                     ->searchable(),
-                TextColumn::make('gambar')
-                    ->searchable(),
                 TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true), // Sembunyikan
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\Articles\Schemas;
 
+// --- Impor Komponen Form (v4) ---
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
 
 class ArticleForm
@@ -13,14 +15,23 @@ class ArticleForm
         return $schema
             ->components([
                 TextInput::make('judul')
-                    ->required(),
-                TextInput::make('penulis')
-                    ->required(),
-                Textarea::make('isi_artikel')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('gambar')
-                    ->default(null),
+                TextInput::make('penulis')
+                    ->required(),
+                
+                FileUpload::make('gambar')
+                    ->label('Gambar Utama')
+                    ->nullable() // Boleh kosong
+                    ->image()
+                    ->disk('public')
+                    ->directory('article-images')
+                    ->imageEditor(),
+                
+                RichEditor::make('isi_artikel')
+                    ->label('Isi Artikel')
+                    ->required()
+                    ->columnSpanFull(),
             ]);
     }
 }
