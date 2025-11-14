@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\CommunityStories\Schemas;
 
-// (PASTIKAN SEMUA 'use' INI ADA)
 use App\Enums\CommunityStoryStatus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -11,7 +10,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Group; // Ini adalah namespace v4 yang benar
+use Filament\Schemas\Components\Group;
 
 class CommunityStoryForm
 {

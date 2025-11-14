@@ -57,13 +57,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/karya/submit', [CommunityStoryController::class, 'store'])->name('karya.store');
     Route::get('/karyasaya', [CommunityStoryController::class, 'myWorks'])->name('karya.mine');
     Route::post('/karya/{story}/request-delete', [CommunityStoryController::class, 'requestDelete'])->name('karya.requestDelete');
-    
-    Route::get('/download/story/{id}/{type}', [FileDownloadController::class, 'downloadCommunityFile'])
-            ->whereIn('type', ['brf', 'zip']) // Hanya izinkan brf atau zip
-            ->name('file.download');
-    Route::get('/riwayatunduh', [DownloadHistoryController::class, 'index'])->name('history.download');
 
-    Route::get('/bukuresmi/{id}/visit', [OfficialBookLinkController::class, 'visit'])->name('bukuresmi.visit');
+    Route::get('/riwayatunduh', [DownloadHistoryController::class, 'index'])->name('history.download');
 });
 
 require __DIR__.'/auth.php';
@@ -79,25 +74,18 @@ Route::get('/terjemahkan', function () {
 Route::get('/ceritakomunitas', [CommunityStoryController::class, 'index'])->name('karya.index');
 Route::get('/ceritakomunitas/{id}', [CommunityStoryController::class, 'show'])->name('karya.show');
 Route::get('/ceritakomunitas/{id}/baca', [CommunityStoryController::class, 'read'])->name('karya.read');
+Route::get('/download/story/{id}/{type}', [FileDownloadController::class, 'downloadCommunityFile'])
+            ->whereIn('type', ['brf', 'zip'])
+            ->name('file.download');
 
 Route::get('/bukuresmi', [OfficialBookController::class, 'index'])->name('bukuresmi.index');
 Route::get('/bukuresmi/{id}', [OfficialBookController::class, 'show'])->name('bukuresmi.show');
+Route::get('/bukuresmi/{id}/visit', [OfficialBookLinkController::class, 'visit'])->name('bukuresmi.visit');
 
 Route::get('/audiobook', [AudiobookController::class, 'index'])->name('audiobook.index');
-
-
-
-Route::get('/bukuresmi/detail', function () {
-    return view('bukuresmidetail');
-});
-
-Route::get('/audiobook/detail', function () {
-    return view('audiobookdetail');
-});
-
-Route::get('/audiobook/detail/dengar', function () {
-    return view('audiobookdengar');
-});
+Route::get('/audiobook/{id}', [AudiobookController::class, 'show'])->name('audiobook.show');
+Route::get('/audiobook/{id}/listen', [AudiobookController::class, 'listen'])->name('audiobook.listen');
+Route::get('/download/audiobook/{id}', [FileDownloadController::class, 'downloadAudiobook'])->name('audiobook.download');
 
 Route::get('/artikel', function () {
     return view('artikel');
@@ -105,12 +93,4 @@ Route::get('/artikel', function () {
 
 Route::get('/artikel/baca', function () {
     return view('artikelbaca');
-});
-
-Route::get('/bagikankarya', function () {
-    return view('bagikankarya');
-});
-
-Route::get('/bagikankarya/tuliskarya', function () {
-    return view('tuliskarya');
 });

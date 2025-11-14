@@ -1,39 +1,73 @@
 @extends('layouts.app')
 
-{{-- Mengatur judul halaman --}}
-@section('title', 'Audiobook')
+{{-- Judul halaman dinamis --}}
+@section('title', $audiobook->judul)
 
 {{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
-   <section id="audiobookdetail" class="flex justify-center items-start px-6 md:px-10 pt-[180px]">
+  <section id="audiobookdetail" class="flex justify-center items-start px-6 md:px-10 pt-[180px] pb-20">
     <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-7xl p-8 md:p-16 shadow-lg">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-10">
-        <div class="flex-1 text-[#05284C] space-y-4">
-          <h2 class="text-4xl font-extrabold">Audiobook</h2>
-          <h3 class="text-2xl font-semibold">SI BOKE</h3>
-          <div class="flex gap-3 mt-4">
-            <a href="/audiobook/detail/dengar" class="bg-[#D4C9BE] text-[#05284C] px-6 py-2 rounded-lg font-medium hover:bg-[#c7bcb0] transition">Dengarkan</a>
-            <button class="border border-[#05284C] text-[#05284C] px-6 py-2 rounded-lg font-medium hover:bg-[#05284C] hover:text-white transition">Download</button>
+      
+      {{-- Wrapper Konten Atas --}}
+      <div class="flex flex-col-reverse md:flex-row items-start justify-center gap-10 md:gap-16">
+        
+        {{-- Kolom Teks (Dinamis) --}}
+        <div class="w-full md:max-w-prose">
+          
+          {{-- Judul Utama --}}
+          <h2 class="text-4xl lg:text-5xl font-extrabold text-[#05284C] break-words">
+            {{ $audiobook->judul }}
+          </h2>
+
+          {{-- Tombol-Tombol Aksi (Dinamis) --}}
+          <div class="flex flex-wrap gap-4 mt-6">
+            
+            {{-- Tombol Dengarkan (Aksi Primer) --}}
+            <a href="{{ route('audiobook.listen', $audiobook->id) }}" 
+               class="flex items-center gap-2 bg-[#05284C] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all shadow-md">
+              <i data-lucide="headphones" class="w-5 h-5"></i>
+              Dengarkan
+            </a>
+            
+            {{-- Tombol Download Audio (Sekunder) --}}
+            <a href="{{ route('audiobook.download', $audiobook->id) }}" 
+               class="flex items-center gap-2 border border-[#05284C] text-[#05284C] px-6 py-2.5 rounded-lg font-semibold hover:bg-[#05284C] hover:text-white transition-all">
+              <i data-lucide="download" class="w-5 h-5"></i>
+              Download Audio
+            </a>
           </div>
-          <div class="text-sm mt-6 leading-relaxed">
-            <p><span class="font-semibold">Penulis :</span> Wenny Oktavia</p>
-            <p><span class="font-semibold">Jenjang :</span> SD</p>
-            <p><span class="font-semibold">Jumlah :</span> 28 halaman</p>
-            <p><span class="font-semibold">Bahasa :</span> Indonesia</p>
-            <p><span class="font-semibold">Format :</span> Buku Komik</p>
+          
+          {{-- Metadata Audiobook (Dinamis) --}}
+          <div class="mt-8 pt-6 border-t border-gray-300">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Detail Buku</h3>
+            <div class="space-y-3 text-base text-gray-700">
+              <p><span class="font-semibold w-28 inline-block">Penulis</span>: {{ $audiobook->penulis }}</p>
+              <p><span class="font-semibold w-28 inline-block">Narator</span>: {{ $audiobook->pengisi_audio }}</p>
+            </div>
           </div>
-          <div class="mt-6">
-            <p class="font-semibold">Sinopsis :</p>
-            <p class="text-sm leading-relaxed">
-              “Aku memang bokek. Kalian boleh saja panggil aku si Boke. Tapi, aku akan jadi orang sukses nantinya jika aku rajin berusaha dan berdoa!”<br>
-              Setuju dengan perkataan si Boke? Baca komik ini untuk mengenal si Boke lebih lanjut!
-            </p>
+
+        </div>
+
+        {{-- Kolom Gambar Sampul (Dinamis) --}}
+        <div class="flex-shrink-0 flex justify-center w-full md:w-auto">
+          <div class="w-full max-w-[340px] md:w-[340px] flex-shrink-0">
+            @if ($audiobook->gambar_cover)
+              {{-- Menggunakan asset() untuk konsistensi --}}
+              <img src="{{ asset('storage/' . $audiobook->gambar_cover) }}" 
+                   alt="Sampul {{ $audiobook->judul }}" 
+                   class="rounded-xl shadow-2xl w-full aspect-[3/4] object-cover">
+            @else
+              <img src="https://placehold.co/340x450/9ca3af/F1EFEC?text=Tanpa+Cover" 
+                   alt="Tanpa Cover" 
+                   class="rounded-xl shadow-2xl w-full aspect-[3/4] object-cover">
+            @endif
           </div>
         </div>
-        <div class="flex-1 flex justify-center">
-          <img src="{{ asset('images/siboke.png') }}" alt="Buku Si Boke" class="rounded-xl shadow-md w-[280px] md:w-[340px]">
-        </div>
+
       </div>
+      
+      {{-- Bagian Sinopsis yang saya tambahkan sebelumnya telah dihapus --}}
+
     </div>
   </section>
 @endsection

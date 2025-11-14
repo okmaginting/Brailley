@@ -4,6 +4,7 @@ namespace App\Http;
 namespace App\Http\Controllers;
 
 use App\Models\CommunityStory;
+use App\Models\Audiobook;
 use App\Models\DownloadHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -16,13 +17,8 @@ class FileDownloadController extends Controller
      */
     public function downloadCommunityFile($id, $type)
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
         $story = CommunityStory::findOrFail($id);
         $path = null;
-
         if ($type == 'brf' && $story->braille_file) {
             $path = $story->braille_file;
         } elseif ($type == 'zip' && $story->braille_mirrored_image) {
@@ -31,15 +27,34 @@ class FileDownloadController extends Controller
             abort(404, 'File not found.');
         }
 
-        // 1. CATAT UNDUHAN
-        DownloadHistory::create([
-            'user_id' => Auth::id(),
-            'downloadable_id' => $story->id,
-            'downloadable_type' => CommunityStory::class,
-            'file_type' => $type, // 'brf' atau 'zip'
-        ]);
+        if (Auth::check()) {
+            DownloadHistory::create([
+                'user_id' => Auth::id(),
+                'downloadable_id' => $story->id,
+                'downloadable_type' => CommunityStory::class,
+                'file_type' => $type,
+            ]);
+        }
 
-        // 2. KIRIM FILE
+        return Storage::disk('public')->download($path);
+    }
+    public function downloadAudiobook($id)
+    {
+        $audiobook = Audiobook::findOrFail($id);
+        $path = $audiobook->file_audio;
+        if (!$path || !Storage::disk('public')->exists($path)) {
+            abort(404, 'File audio tidak ditemukan.');
+        }
+
+        if (Auth::check()) {
+            DownloadHistory::create([
+                'user_id' => Auth::id(),
+                'downloadable_id' => $audiobook->id,
+                'downloadable_type' => Audiobook::class,
+                'file_type' => pathinfo($path, PATHINFO_EXTENSION),
+            ]);
+        }
+
         return Storage::disk('public')->download($path);
     }
 }

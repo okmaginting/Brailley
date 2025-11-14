@@ -9,8 +9,15 @@ use App\Models\ReadingHistory;
 class Audiobook extends Model
 {
     public function history()
-        {
-            // Relasi polimorfik
-            return $this->morphMany(ReadingHistory::class, 'readable');
-        }
+    {
+        return $this->morphMany(ReadingHistory::class, 'readable');
+    }
+        
+    protected $fillable = [
+    'judul',
+    'penulis',
+    'pengisi_audio',
+    'file_audio',
+    'gambar_cover',
+    ];
 }

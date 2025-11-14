@@ -32,9 +32,6 @@ class CommunityStoryController extends Controller
 
     public function show($id)
     {
-        // 1. Ambil cerita berdasarkan ID
-        // 2. Pastikan ceritanya ada (firstOrFail)
-        // 3. Pastikan statusnya "Dipublish" (agar draf tidak bocor)
         $story = CommunityStory::where('status', CommunityStoryStatus::Dipublish)
                                 ->where('id', $id)
                                 ->firstOrFail(); // Akan otomatis 404 jika tidak ditemukan
@@ -54,15 +51,13 @@ class CommunityStoryController extends Controller
         $content = "";
 
         if (Auth::check()) {
-            // Ini akan membuat data baru jika belum ada,
-            // atau memperbarui 'updated_at' jika sudah ada.
             ReadingHistory::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
                     'readable_id' => $story->id,
                     'readable_type' => CommunityStory::class,
                 ],
-                [] // 'updated_at' akan diperbarui secara otomatis
+                []
             );
         }
 

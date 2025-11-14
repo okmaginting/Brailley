@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Audiobook;
 
 class DownloadHistory extends Model
 {
@@ -54,5 +55,30 @@ class DownloadHistory extends Model
             return route('file.download', ['id' => $this->downloadable->id, 'type' => $this->file_type]);
         }
         return '#';
+    }
+
+    public function downloadAudiobook($id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $audiobook = Audiobook::findOrFail($id);
+        $path = $audiobook->file_audio;
+
+        if (!$path || !Storage::disk('public')->exists($path)) {
+            abort(404, 'File audio tidak ditemukan.');
+        }
+
+        // 1. CATAT UNDUHAN
+        DownloadHistory::create([
+            'user_id' => Auth::id(),
+            'downloadable_id' => $audiobook->id,
+            'downloadable_type' => Audiobook::class,
+            'file_type' => pathinfo($path, PATHINFO_EXTENSION), // misal: 'mp3'
+        ]);
+
+        // 2. KIRIM FILE
+        return Storage::disk('public')->download($path);
     }
 }

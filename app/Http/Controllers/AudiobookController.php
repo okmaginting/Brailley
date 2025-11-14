@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Audiobook;
+use App\Models\ReadingHistory;
+use Illuminate\Support\Facades\Auth;
 
 class AudiobookController extends Controller
 {
@@ -13,10 +15,7 @@ class AudiobookController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Mulai query
         $query = Audiobook::query();
-
-        // 2. Tambahkan logika pencarian (berdasarkan judul, penulis, atau pengisi audio)
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
@@ -25,13 +24,43 @@ class AudiobookController extends Controller
                   ->orWhere('pengisi_audio', 'like', '%' . $searchTerm . '%');
             });
         }
-
-        // 3. Ambil data, urutkan dari terbaru, dan paginasi (12 per halaman)
         $audiobooks = $query->latest()->paginate(12);
-
-        // 4. Kirim data ke view (asumsi nama file: audiobook.blade.php)
         return view('audiobook', [
             'audiobooks' => $audiobooks
+        ]);
+    }
+    public function show($id)
+    {
+        // Ambil audiobook berdasarkan ID atau tampilkan 404
+        $audiobook = Audiobook::findOrFail($id); 
+
+        // Kirim data audiobook ke view
+        return view('audiobookdetail', [
+            'audiobook' => $audiobook
+        ]);
+    }
+
+    /**
+     * Menampilkan halaman pemutar audio & mencatat riwayat.
+     * ↓↓↓ TAMBAHKAN METHOD BARU INI ↓↓↓
+     */
+    public function listen($id)
+    {
+        $audiobook = Audiobook::findOrFail($id);
+
+        // Cek jika user login, catat ke riwayat
+        if (Auth::check()) {
+            ReadingHistory::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'readable_id' => $audiobook->id,
+                    'readable_type' => Audiobook::class,
+                ],
+                [] // 'updated_at' akan diperbarui otomatis
+            );
+        }
+        return view('audiobookdengar', [
+            'audiobook' => $audiobook
         ]);
     }
 }
