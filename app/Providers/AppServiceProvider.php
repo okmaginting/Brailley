@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Filament\Dashboard\Pages\Auth\LoginResponse;
-use App\Filament\Dashboard\Pages\Auth\LogoutResponse;
+use App\Filament\Resources\Auth\LoginResponse;
+use App\Filament\Resources\Auth\LogoutResponse;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Dashboard\Pages\Auth;
+namespace App\Filament\Resources\Auth;
 
 use Illuminate\Http\RedirectResponse;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse as Responsable;
