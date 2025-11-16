@@ -9,6 +9,7 @@ use App\Models\DownloadHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controller;
+use Carbon\Carbon;
 
 class FileDownloadController extends Controller
 {
@@ -28,6 +29,16 @@ class FileDownloadController extends Controller
         }
 
         if (Auth::check()) {
+        // Cek apakah sudah ada log untuk file ini dalam 10 detik terakhir
+        $recentDownload = DownloadHistory::where('user_id', Auth::id())
+            ->where('downloadable_id', $story->id)
+            ->where('downloadable_type', CommunityStory::class)
+            ->where('file_type', $type)
+            ->where('created_at', '>=', Carbon::now()->subSeconds(10))
+            ->exists(); // 'exists()' sangat cepat
+
+        // HANYA buat log baru jika TIDAK ADA log terbaru
+        if (!$recentDownload) {
             DownloadHistory::create([
                 'user_id' => Auth::id(),
                 'downloadable_id' => $story->id,
@@ -35,6 +46,10 @@ class FileDownloadController extends Controller
                 'file_type' => $type,
             ]);
         }
+    }
+
+    // 2. KIRIM FILE
+    return Storage::disk('public')->download($path);
 
         return Storage::disk('public')->download($path);
     }
@@ -47,6 +62,15 @@ class FileDownloadController extends Controller
         }
 
         if (Auth::check()) {
+        // Cek apakah sudah ada log untuk file ini dalam 10 detik terakhir
+        $recentDownload = DownloadHistory::where('user_id', Auth::id())
+            ->where('downloadable_id', $audiobook->id)
+            ->where('downloadable_type', Audiobook::class)
+            ->where('created_at', '>=', Carbon::now()->subSeconds(10))
+            ->exists();
+
+        // HANYA buat log baru jika TIDAK ADA log terbaru
+        if (!$recentDownload) {
             DownloadHistory::create([
                 'user_id' => Auth::id(),
                 'downloadable_id' => $audiobook->id,
@@ -54,7 +78,9 @@ class FileDownloadController extends Controller
                 'file_type' => pathinfo($path, PATHINFO_EXTENSION),
             ]);
         }
+    }
 
-        return Storage::disk('public')->download($path);
+    // 2. KIRIM FILE
+    return Storage::disk('public')->download($path);
     }
 }
