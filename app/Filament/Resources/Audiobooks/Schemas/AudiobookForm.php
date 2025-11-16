@@ -34,7 +34,7 @@ class AudiobookForm
                     ->required()
                     ->disk('public') // Simpan di storage/app/public
                     ->directory('audio-files')
-                    ->acceptedFileTypes(['audio/mpeg', 'audio/mp3']) // Hanya MP3
+                    ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav']) // Hanya MP3
                     ->preserveFilenames(),
                 
                 FileUpload::make('gambar_cover')
