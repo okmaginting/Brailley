@@ -1,130 +1,181 @@
-document.addEventListener('DOMContentLoaded', () => {
-      // Cek dukungan browser
-      if (!('speechSynthesis' in window)) {
-        console.error('Browser Anda tidak mendukung Text-to-Speech.');
-        // Sembunyikan tombol
-        const ttsContainer = document.getElementById('tts-play-pause-button')?.parentElement;
-        if (ttsContainer) ttsContainer.style.display = 'none';
-        return;
-      }
+document.addEventListener("DOMContentLoaded", () => {
+    const playPauseBtn = document.getElementById("tts-play-pause-button");
+    const stopBtn = document.getElementById("tts-stop-button");
+    const playIcon = document.getElementById("tts-play-icon");
+    const pauseIcon = document.getElementById("tts-pause-icon");
 
-      const synth = window.speechSynthesis;
-      let utterance = null;
-      let isPaused = false; 
+    const contentElement = document.querySelector("#article-content");
+    // Mengambil h2 atau h3 di dalam #article-body
+    const titleElement = document.querySelector("#article-body h2, #article-body h3");
+    // Mengambil detail cerita (hidden div)
+    const detailSection = document.querySelector(".space-y-3.text-base.text-gray-700");
+    // Mengambil penulis artikel
+    const articleAuthor = document.querySelector("#article-body p.text-gray-600");
 
-      // Ambil tombol
-      const ttsPlayPauseButton = document.getElementById('tts-play-pause-button');
-      const ttsStopButton = document.getElementById('tts-stop-button');
-      const playIcon = document.getElementById('tts-play-icon');
-      const pauseIcon = document.getElementById('tts-pause-icon');
+    // Pastikan audio bersih saat halaman baru dimuat
+    speechSynthesis.cancel();
 
-      // --- LOGIKA BARU YANG FLEKSIBEL ---
-      // Kita cek kedua skenario halaman
-      const infoLegacy = document.getElementById('article-body');
-      const contentLegacy = document.getElementById('article-content');
+    // Jika elemen konten atau judul tidak ada, hentikan script
+    if (!contentElement || !titleElement) return;
 
-      const infoNew = document.getElementById('tts-info');
-      const contentNew = document.getElementById('article-body'); // Di halaman baru, #article-body adalah ISI
-      const authorNew = document.getElementById('tts-author');
+    let queue = [];
+    let currentIndex = 0;
+    let isPaused = false;
+    let isPlaying = false;
 
-      // Guard clause
-      if (!ttsPlayPauseButton || !ttsStopButton || !playIcon || !pauseIcon) {
-        console.error("Elemen tombol TTS tidak ditemukan.");
-        return; 
-      }
+    // ---------------------------
+    // EVENT: SAAT KELUAR HALAMAN / REFRESH
+    // ---------------------------
+    window.addEventListener("beforeunload", () => {
+        // Mematikan paksa suara browser saat pindah halaman/refresh
+        speechSynthesis.cancel();
+    });
 
-      // Fungsi untuk menampilkan ikon
-      const showPlayIcon = () => {
-        if (playIcon && pauseIcon) {
-          playIcon.classList.remove('hidden');
-          pauseIcon.classList.add('hidden');
-        }
-      };
-      const showPauseIcon = () => {
-        if (playIcon && pauseIcon) {
-          playIcon.classList.add('hidden');
-          pauseIcon.classList.remove('hidden');
-        }
-      };
+    // ---------------------------
+    // POTONG TEKS MENJADI KALIMAT
+    // ---------------------------
+    function splitText(text) {
+        return text
+            .replace(/\s+/g, " ")
+            .match(/[^\.!\?]+[\.!\?]+|\S+/g) || [];
+    }
 
-      ttsPlayPauseButton.addEventListener('click', () => {
-        if (!utterance) {
-          let textToSpeak = "";
+    // ---------------------------
+    // SUSUN TEKS PEMBACAAN
+    // ---------------------------
+    function buildReadingText() {
+        // Ambil teks judul
+        const title = titleElement.innerText.trim();
+        let intro = `${title}. `;
 
-          // Cek apakah ini Halaman Artikel (Struktur Lama)
-          if (infoLegacy && contentLegacy) {
-            console.log("Mode TTS: Halaman Artikel (Lama)");
-            textToSpeak = infoLegacy.textContent.trim() + " . " + contentLegacy.textContent.trim();
-          } 
-          // Cek apakah ini Halaman Cerita (Struktur Baru)
-          else if (infoNew && contentNew) {
-            console.log("Mode TTS: Halaman Cerita (Baru)");
-            // Ambil Judul, Penulis (jika ada), dan Isi
-            const title = infoNew.querySelector('h2')?.textContent.trim() || "";
-            const author = authorNew?.textContent.trim() || "";
-            const content = contentNew.textContent.trim();
-            
-            textToSpeak = title + " . " + author + " . " + content;
-          } 
-          // Fallback jika tidak ada yang cocok
-          else if (infoLegacy) {
-            console.warn("Mode TTS: Fallback (Hanya #article-body)");
-            textToSpeak = infoLegacy.textContent.trim();
-          } else {
-            console.error("Tidak ada konten yang bisa dibaca. Cek ID tts-info, article-body, atau article-content.");
-            return;
-          }
+        // MODE CERITA KOMUNITAS (Cek jika ada detailSection)
+        if (detailSection) {
+            // innerText bisa membaca element meski di-style position absolute (asal tidak hidden/display none)
+            const detailText = detailSection.innerText
+                .replace(/\n+/g, ". ") // Ganti enter dengan titik agar ada jeda
+                .trim();
+            intro += `${detailText}. `;
+        }
 
-          // Bersihkan label "Text-to-Speech:"
-          textToSpeak = textToSpeak.replace(/Text-to-Speech:/gi, '');
-          
-          if (textToSpeak.trim().length === 0) return; 
+        // MODE ARTIKEL (Cek jika ada author section)
+        else if (articleAuthor) {
+            const author = articleAuthor.innerText.replace("Oleh:", "").trim();
+            intro += `Oleh ${author}. `;
+        }
 
-          // Buat objek ucapan
-          utterance = new SpeechSynthesisUtterance(textToSpeak);
-          utterance.lang = 'id-ID'; 
-          
-          utterance.onend = () => {
-            if (utterance) { 
-               showPlayIcon();
-              utterance = null;
-              isPaused = false;
-            }
-          };
+        return intro;
+    }
 
-          // Mulai berbicara
-          synth.speak(utterance);
-          showPauseIcon();
-          isPaused = false;
-        } 
-        // Kasus 2: Pause/Resume
-        else {
-          if (!isPaused) {
-            synth.pause();
-            isPaused = true;
-            showPlayIcon();
-          } else {
-            synth.resume();
-            isPaused = false;
-            showPauseIcon();
-          }
-        }
-      });
+    // ---------------------------
+    // MULAI MEMBACA (STREAMING)
+    // ---------------------------
+    function startReading() {
+        const introText = buildReadingText();
+        const contentText = contentElement.innerText.trim();
 
-      // Event listener tombol Stop
-      ttsStopButton.addEventListener('click', () => {
-        if (synth.speaking) { 
-          synth.cancel(); 
-        }
-        showPlayIcon();
-        utterance = null;
-        isPaused = false;
-      });
+        // Gabungkan (Intro + Isi)
+        const fullText = introText + " " + contentText;
 
-      // Berhenti bicara saat pindah halaman
-      window.addEventListener('beforeunload', () => {
-        if (synth.speaking) {
-          synth.cancel();
-        }
-      });
+        // Bagi per kalimat
+        queue = splitText(fullText);
+        currentIndex = 0;
+
+        isPlaying = true;
+        isPaused = false;
+
+        speakChunk();
+        updateIcons();
+    }
+
+    // ---------------------------
+    // BACA SATU KALIMAT
+    // ---------------------------
+    function speakChunk() {
+        if (!isPlaying || isPaused) return;
+
+        // Jika antrian habis
+        if (currentIndex >= queue.length) {
+            return finishReading();
+        }
+
+        const utterance = new SpeechSynthesisUtterance(queue[currentIndex]);
+        utterance.lang = "id-ID"; // Set bahasa Indonesia
+
+        // Event saat satu kalimat selesai dibaca
+        utterance.onend = () => {
+            if (!isPaused && isPlaying) {
+                currentIndex++;
+                speakChunk(); // Lanjut ke kalimat berikutnya
+            }
+        };
+
+        // Error handling jika browser membatalkan paksa
+        utterance.onerror = (e) => {
+            console.error("TTS Error:", e);
+        };
+
+        speechSynthesis.speak(utterance);
+    }
+
+    // ---------------------------
+    // SELESAI MEMBACA
+    // ---------------------------
+    function finishReading() {
+        const endVoice = new SpeechSynthesisUtterance("Terima kasih telah mendengarkan.");
+        endVoice.lang = "id-ID";
+
+        endVoice.onend = () => stopReading();
+        speechSynthesis.speak(endVoice);
+    }
+
+    // ---------------------------
+    // UPDATE ICON PLAY/PAUSE
+    // ---------------------------
+    function updateIcons() {
+        if (isPlaying && !isPaused) {
+            playIcon.classList.add("hidden");
+            pauseIcon.classList.remove("hidden");
+        } else {
+            playIcon.classList.remove("hidden");
+            pauseIcon.classList.add("hidden");
+        }
+    }
+
+    // ---------------------------
+    // STOP TOTAL
+    // ---------------------------
+    function stopReading() {
+        speechSynthesis.cancel(); // Matikan suara browser
+        isPlaying = false;
+        isPaused = false;
+        currentIndex = 0;
+        updateIcons();
+    }
+
+    // ---------------------------
+    // EVENT BUTTON CLICKS
+    // ---------------------------
+    playPauseBtn.addEventListener("click", () => {
+        if (!isPlaying) {
+            // Jika belum main, mulai dari awal
+            stopReading(); // Reset dulu biar aman
+            startReading();
+        } else if (isPaused) {
+            // Jika pause, resume
+            isPaused = false;
+            speechSynthesis.resume(); // Resume bawaan browser (kadang buggy, jadi kita panggil chunk lagi kalau perlu)
+            if (!speechSynthesis.speaking) {
+                 speakChunk();
+            }
+        } else {
+            // Jika sedang main, pause
+            isPaused = true;
+            speechSynthesis.cancel(); // Cancel lebih aman daripada pause untuk memotong kalimat panjang
+            // Kita tidak reset currentIndex, jadi nanti pas resume dia mulai dari kalimat tsb
+            updateIcons();
+        }
+        updateIcons();
+    });
+
+    stopBtn.addEventListener("click", () => stopReading());
 });

@@ -27,7 +27,7 @@ class DownloadHistoryController extends Controller
             );
         }
 
-        $historyItems = $query->paginate(9); // 9 item (3x3 grid)
+        $historyItems = $query->paginate(12); // 9 item (3x3 grid)
 
         return view('riwayatunduh', [
             'historyItems' => $historyItems
