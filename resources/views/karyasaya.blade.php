@@ -17,31 +17,31 @@
         {{-- ======================= --}}
         @if (session('success'))
             <div x-data="{ show: true }"
-                 x-show="show"
-                 x-init="setTimeout(() => show = true, 100)"
-                 class="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:px-0"
-                 style="display: none;">
+                x-show="show"
+                x-init="setTimeout(() => show = false, 5000)" {{-- Sembunyikan setelah 5 detik --}}
+                class="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:px-0"
+                x-cloak style="display: none;">
 
                 {{-- Overlay Gelap --}}
                 <div x-show="show"
-                     x-transition:enter="ease-out duration-300"
-                     x-transition:enter-start="opacity-0"
-                     x-transition:enter-end="opacity-100"
-                     x-transition:leave="ease-in duration-200"
-                     x-transition:leave-start="opacity-100"
-                     x-transition:leave-end="opacity-0"
-                     class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
-                     @click="show = false"></div>
+                    x-transition:enter="ease-out duration-300"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+                    @click="show = false"></div>
 
                 {{-- Konten Modal --}}
                 <div x-show="show"
-                     x-transition:enter="ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave="ease-in duration-200"
-                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="relative bg-white rounded-[30px] px-8 pt-8 pb-8 overflow-hidden shadow-2xl transform transition-all sm:max-w-sm w-full flex flex-col items-center text-center">
+                    x-transition:enter="ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    class="relative bg-white rounded-[30px] px-8 pt-8 pb-8 overflow-hidden shadow-2xl transform transition-all sm:max-w-sm w-full flex flex-col items-center text-center">
 
                     <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
                         <i data-lucide="check-circle-2" class="w-12 h-12 text-green-600"></i>
@@ -60,7 +60,7 @@
                     <div class="w-full">
                         <button type="button"
                                 @click="show = false"
-                                class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-bold rounded-2xl text-white bg-[#05284C] hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#05284C] transition-all duration-200 shadow-md hover:shadow-lg">
+                                class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-bold rounded-2xl text-white bg-[#05284C] hover:bg-[#073b6e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#05284C] transition-all duration-200 shadow-md hover:shadow-lg">
                             Oke, Mengerti
                         </button>
                     </div>
@@ -88,8 +88,10 @@
 
                     @forelse ($stories as $story)
                         <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                            
+                            {{-- Judul, Penulis, Status --}}
                             <div class="mb-4">
-                                <h3 class="font-bold text-lg text-gray-900 truncate" title="{{ $story->judul }}">
+                                <h3 class="font-bold text-lg text-gray-900 truncate group-hover:text-[#05284C] transition-colors" title="{{ $story->judul }}">
                                     {{ $story->judul }}
                                 </h3>
                                 <p class="text-sm text-gray-600">{{ $story->penulis }}</p>
@@ -109,41 +111,38 @@
                                 </span>
                             </div>
 
-                            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+                            {{-- Gambar Sampul (dengan border konsisten) --}}
+                            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4 border-4 border-white shadow-md">
                                 @if ($story->gambar_cerita)
                                     <img src="{{ asset('storage/' . $story->gambar_cerita) }}"
-                                         alt="Sampul {{ $story->judul }}"
-                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                        alt="Sampul {{ $story->judul }}"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 @else
                                     <img src="https://placehold.co/300x400/9ca3af/F1EFEC?text=Tanpa+Cover"
-                                         alt="Tanpa Cover"
-                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                        alt="Tanpa Cover"
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 @endif
                             </div>
 
+                            {{-- Tombol Aksi --}}
                             <div class="mt-auto space-y-2">
+                                
                                 {{-- Link ke halaman detail (hanya jika sudah dipublish) --}}
                                 @if($story->status == \App\Enums\CommunityStoryStatus::Dipublish)
-                                    <a href="{{ route('karya.show', $story->id) }}" class="block w-full bg-[#05284C] text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-opacity-90 transition-all duration-300">
+                                    <a href="{{ route('karya.show', $story->id) }}" class="block w-full bg-[#05284C] text-white text-center rounded-xl py-2.5 px-4 font-semibold text-sm hover:bg-[#073b6e] transition-all duration-300 shadow-md">
                                         Lihat Detail Publik
                                     </a>
                                 @else
-                                    <span class="block w-full bg-gray-300 text-gray-600 text-center rounded-lg py-2.5 px-4 font-semibold text-sm cursor-not-allowed">
+                                    <span class="block w-full bg-gray-300 text-gray-600 text-center rounded-xl py-2.5 px-4 font-semibold text-sm cursor-not-allowed shadow-md">
                                         Belum Dipublish
                                     </span>
                                 @endif
 
                                 {{-- TOMBOL MINTA HAPUS (MEMICU MODAL) --}}
                                 @if(!in_array($story->status, [\App\Enums\CommunityStoryStatus::Pengecekan, \App\Enums\CommunityStoryStatus::RequestHapus]))
-                                    {{-- 
-                                      PERUBAHAN PENTING:
-                                      Tombol ini sekarang tidak langsung submit form.
-                                      Ia mengisi 'deleteUrl' dengan route yang sesuai untuk cerita INI,
-                                      lalu membuka modal konfirmasi.
-                                    --}}
                                     <button type="button"
                                             @click="openDeleteModal = true; deleteUrl = '{{ route('karya.requestDelete', $story->id) }}'"
-                                            class="block w-full bg-red-600 text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-red-700 transition-all duration-300">
+                                            class="block w-full bg-red-600 text-white text-center rounded-xl py-2.5 px-4 font-semibold text-sm hover:bg-red-700 transition-all duration-300 shadow-md">
                                         Minta Hapus
                                     </button>
                                 @endif
@@ -158,7 +157,7 @@
                                 @if (request('search'))
                                     Karya dengan judul "{{ request('search') }}" tidak ditemukan.
                                 @else
-                                    <a href="{{ route('karya.create') }}" class="text-[#05284C] hover:underline font-semibold">Bagikan karya pertama Anda!</a>
+                                    <a href="{{ route('karya.create') }}" wire:navigate class="text-[#05284C] hover:underline font-semibold">Bagikan karya pertama Anda!</a>
                                 @endif
                             </p>
                         </div>
@@ -178,29 +177,29 @@
         {{-- MODAL KONFIRMASI HAPUS --}}
         {{-- ======================= --}}
         <div x-show="openDeleteModal"
-             class="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:px-0"
-             x-cloak style="display: none;"> {{-- x-cloak mencegah kedipan --}}
+            class="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6 sm:px-0"
+            x-cloak style="display: none;">
 
             {{-- Overlay --}}
             <div x-show="openDeleteModal"
-                 x-transition:enter="ease-out duration-300"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="ease-in duration-200"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
-                 @click="openDeleteModal = false"></div>
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+                @click="openDeleteModal = false"></div>
 
             {{-- Konten Modal --}}
             <div x-show="openDeleteModal"
-                 x-transition:enter="ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                 x-transition:leave="ease-in duration-200"
-                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                 class="relative bg-white rounded-[30px] p-8 overflow-hidden shadow-2xl transform transition-all sm:max-w-md w-full text-center">
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative bg-white rounded-[30px] p-8 overflow-hidden shadow-2xl transform transition-all sm:max-w-md w-full text-center">
 
                 <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
                     <i data-lucide="alert-triangle" class="w-8 h-8 text-red-600"></i>

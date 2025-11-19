@@ -21,13 +21,16 @@
                 <div class="flex flex-wrap gap-4 mb-10">
                     
                     {{-- Tombol Baca (Primary Action) --}}
+                    {{-- Menambahkan wire:navigate --}}
                     <a href="/ceritakomunitas/{{ $story->id }}/baca" 
+                       wire:navigate
                        class="flex items-center justify-center gap-2 bg-[#05284C] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#073b6e] transition-colors shadow-lg shadow-[#05284C]/20 min-w-[160px]">
                         <i data-lucide="book-open" class="w-5 h-5"></i>
                         Baca Cerita
                     </a>
                     
                     {{-- Tombol Download .BRF (Secondary Action) --}}
+                    {{-- Tidak pakai wire:navigate karena ini download file --}}
                     @if ($story->braille_file)
                         <a href="{{ route('file.download', ['id' => $story->id, 'type' => 'brf']) }}" 
                            download 
@@ -38,6 +41,7 @@
                     @endif
 
                     {{-- Tombol Download .ZIP (Secondary Action) --}}
+                    {{-- Tidak pakai wire:navigate karena ini download file --}}
                     @if ($story->braille_mirrored_image)
                         <a href="{{ route('file.download', ['id' => $story->id, 'type' => 'zip']) }}" 
                            download 
@@ -94,7 +98,6 @@
         <div class="mt-12 pt-8 border-t border-[#05284C]/10">
             <h3 class="text-2xl font-bold text-[#05284C] mb-4">Sinopsis</h3>
             
-            {{-- Perubahan: Menambahkan class text-justify --}}
             <div class="prose prose-lg max-w-none text-gray-700 whitespace-pre-line leading-relaxed text-justify">
                 {{ $story->sipnosis ?? 'Sinopsis tidak tersedia.' }}
             </div>

@@ -23,8 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
     let isPaused = false;
     let isPlaying = false;
 
+    // ----------------------------------------------------------------------
+    // FIX: Hentikan audio saat navigasi Livewire/Turbo (SPA-like)
+    // ----------------------------------------------------------------------
+    document.addEventListener('livewire:navigating', () => {
+        // Panggil fungsi stop total Anda
+        stopReading(); 
+    });
+
     // ---------------------------
-    // EVENT: SAAT KELUAR HALAMAN / REFRESH
+    // EVENT: SAAT KELUAR HALAMAN / REFRESH (untuk full reload)
     // ---------------------------
     window.addEventListener("beforeunload", () => {
         // Mematikan paksa suara browser saat pindah halaman/refresh
@@ -35,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // POTONG TEKS MENJADI KALIMAT
     // ---------------------------
     function splitText(text) {
+        // Mengganti multiple spaces dengan satu space, lalu memotong berdasarkan tanda baca
         return text
             .replace(/\s+/g, " ")
             .match(/[^\.!\?]+[\.!\?]+|\S+/g) || [];
@@ -109,9 +118,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
-        // Error handling jika browser membatalkan paksa
+        // Event saat terjadi error (diperbaiki agar tidak log 'interrupted')
         utterance.onerror = (e) => {
-            console.error("TTS Error:", e);
+            // HANYA log error yang TIDAK disebabkan oleh pembatalan yang disengaja (saat stop/pause/navigasi)
+            if (e.error !== "interrupted") {
+                console.error("TTS Error:", e);
+            }
         };
 
         speechSynthesis.speak(utterance);
@@ -157,21 +169,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // ---------------------------
     playPauseBtn.addEventListener("click", () => {
         if (!isPlaying) {
-            // Jika belum main, mulai dari awal
+            // 1. Jika belum main, mulai dari awal
             stopReading(); // Reset dulu biar aman
             startReading();
         } else if (isPaused) {
-            // Jika pause, resume
+            // 2. Jika pause, resume
             isPaused = false;
-            speechSynthesis.resume(); // Resume bawaan browser (kadang buggy, jadi kita panggil chunk lagi kalau perlu)
+            speechSynthesis.resume(); // Resume bawaan browser
+            
+            // Fallback: Jika resume gagal/buggy, panggil speakChunk untuk melanjutkan
             if (!speechSynthesis.speaking) {
-                 speakChunk();
+                speakChunk();
             }
         } else {
-            // Jika sedang main, pause
+            // 3. Jika sedang play, pause
             isPaused = true;
-            speechSynthesis.cancel(); // Cancel lebih aman daripada pause untuk memotong kalimat panjang
-            // Kita tidak reset currentIndex, jadi nanti pas resume dia mulai dari kalimat tsb
+            speechSynthesis.cancel(); // Cancel untuk menghentikan ucapan saat ini
             updateIcons();
         }
         updateIcons();

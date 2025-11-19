@@ -10,7 +10,7 @@
       <h2 class="text-3xl font-semibold text-black mb-10 text-center">Menu Utama</h2>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mb-6">
-        <a href="/terjemahkan" class="block">
+        <a href="/terjemahkan" wire:navigate class="block">
           {{-- Diubah shadow-xl/20 menjadi shadow-lg DAN ditambahkan border --}}
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
             <h3 class="text-base font-semibold text-black mb-2">Terjemahkan</h3>
@@ -20,7 +20,7 @@
           </div>
         </a>
 
-        <a href="/ceritakomunitas" class="block">
+        <a href="/ceritakomunitas" wire:navigate class="block">
           {{-- Diubah shadow-xl/20 menjadi shadow-lg DAN ditambahkan border --}}
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
             <h3 class="text-base font-semibold text-black mb-2">Cerita Komunitas</h3>
@@ -30,8 +30,7 @@
           </div>
         </a>
 
-        <a href="/bukuresmi" class="block">
-          {{-- Diubah shadow-xl/20 menjadi shadow-lg DAN ditambahkan border --}}
+        <a href="/bukuresmi" wire:navigate class="block">
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
             <h3 class="text-base font-semibold text-black mb-2">Buku Resmi</h3>
             <div class="flex items-center gap-2">
@@ -42,7 +41,7 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-        <a href="/audiobook" class="block">
+        <a href="/audiobook" wire:navigate class="block">
           {{-- Sudah benar shadow-lg, DAN ditambahkan border --}}
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
             <h3 class="text-base font-semibold text-black mb-2">Audiobook</h3>
@@ -52,7 +51,7 @@
           </div>
         </a>
 
-        <a href="/artikel" class="block">
+        <a href="/artikel" wire:navigate class="block">
           {{-- Diubah shadow-xl/20 menjadi shadow-lg DAN ditambahkan border --}}
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
             <h3 class="text-base font-semibold text-black mb-2">Artikel</h3>
@@ -62,7 +61,7 @@
           </div>
         </a>
 
-        <a href="/bagikankarya" class="block">
+        <a href="/bagikankarya" wire:navigate class="block">
           {{-- Diubah shadow-xl/20 menjadi shadow-lg DAN ditambahkan border --}}
           <div class="bg-[#fffcf6] rounded-2xl p-5 flex flex-col justify-center items-center shadow-lg hover:shadow-xl transition h-40 cursor-pointer border border-gray-300">
             <h3 class="text-base font-semibold text-black mb-2">Bagikan Karya</h3>

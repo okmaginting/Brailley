@@ -5,6 +5,7 @@
     {{-- BAGIAN 1: LOGO --}}
     <div class="w-full border-b border-gray-300">
         <div class="flex justify-center w-full max-w-7xl mx-auto px-16 py-4">
+            {{-- Tambahkan wire:navigate disini --}}
             <a href="/" wire:navigate class="flex items-center gap-3">
                 <img src="{{ asset('images/logo.png') }}" alt="Braille Logo" class="h-9 w-auto">
             </a>
@@ -16,10 +17,11 @@
         
         @if( request()->is('profile*') || request()->is('riwayatbaca*') || request()->is('riwayatunduh*') || request()->is('karyasaya*') )
             {{-- 
-              KONDISI 3: HALAMAN PROFIL (Tidak berubah)
+              KONDISI 3: HALAMAN PROFIL
             --}}
             
             <div class="pr-4"> 
+                {{-- JANGAN pakai wire:navigate untuk history.back() --}}
                 <a href="javascript:history.back()" class="flex items-center gap-2 hover:text-[#05284C]" title="Kembali ke halaman sebelumnya">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
                 </a>
@@ -46,7 +48,7 @@
             --}}
 
             <div class="flex-1">
-                </div>
+            </div>
 
             <div class="flex-shrink-0 whitespace-nowrap px-8">
                 @guest
@@ -72,19 +74,16 @@
                             <span class="text-2xl font-medium text-gray-800">Hallo, {{ Auth::user()->name }}!</span>
                         </div>
                     @endif
-                    @endguest
+                @endguest
             </div>
 
-            {{-- ================================================ --}}
-            {{-- == PERUBAHAN PERTAMA: LOGIKA KONDISI 1 (KANAN) == --}}
-            {{-- ================================================ --}}
+            {{-- Kanan: Admin / Profile --}}
             <div class="flex-1 flex justify-end">
                 <div class="relative">
                     @auth
-                        {{-- Logika @if(request()->is('/')) dihapus --}}
-                        {{-- Cek role berlaku di semua halaman KONDISI 1 --}}
                         @if(Auth::user()->role == 'admin')
-                            <a href="/admin" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] font-medium">
+                            {{-- HAPUS wire:navigate untuk Admin Panel agar aset termuat sempurna --}}
+                            <a href="/admin" class="flex items-center gap-2 hover:text-[#05284C] font-medium">
                                 <i data-lucide="shield" class="w-5 h-5"></i>
                                 <span>Admin Panel</span> 
                             </a>
@@ -96,7 +95,7 @@
                             </a>
                         @endif
                     @else
-                        @endguest
+                    @endauth
                 </div>
             </div>
             
@@ -133,9 +132,9 @@
             </div>
             <div class="relative">
                 @auth
-                    {{-- Cek role ditambahkan di sini juga --}}
                     @if(Auth::user()->role == 'admin')
-                        <a href="/admin" wire:navigate class="flex items-center gap-2 hover:text-[#05284C] font-medium">
+                        {{-- HAPUS wire:navigate untuk Admin Panel --}}
+                        <a href="/admin" class="flex items-center gap-2 hover:text-[#05284C] font-medium">
                             <i data-lucide="shield" class="w-5 h-5"></i>
                             <span>Admin Panel</span> 
                         </a>

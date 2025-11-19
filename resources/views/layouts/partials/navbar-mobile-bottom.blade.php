@@ -1,10 +1,3 @@
-{{-- 
-    =================================
-    == NAVBAR MOBILE: BAGIAN BAWAH ==
-    =================================
-    * PERUBAHAN: Item aktif kini memiliki background, shadow, dan border.
-    * py-2 ditambahkan ke semua link agar tinggi tetap konsisten.
---}}
 <nav 
     wire:loading.class="opacity-50 transition-opacity" 
     class="md:hidden block bg-[#F1EFEC] w-full shadow-[0_-2px_5px_rgba(0,0,0,0.1)] fixed bottom-0 left-0 z-50 pb-safe">

@@ -22,15 +22,17 @@
                 <div class="flex flex-wrap gap-4 mb-10">
             
                     {{-- Tombol Kunjungi Sumber (Primary Action) --}}
+                    {{-- Menambahkan wire:navigate --}}
                     <a href="{{ route('bukuresmi.visit', $book->id) }}" 
                        target="_blank" 
                        rel="noopener noreferrer"
+                       wire:navigate
                        class="flex items-center justify-center gap-2 bg-[#05284C] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#073b6e] transition-colors shadow-lg shadow-[#05284C]/20 min-w-[160px]">
                         <i data-lucide="external-link" class="w-5 h-5"></i>
                         Kunjungi Sumber
                     </a>
 
-                    {{-- Area untuk tombol tambahan (Download, dsb) jika nanti dibutuhkan --}}
+                    {{-- Area untuk tombol tambahan jika dibutuhkan --}}
                 </div>
           
                 {{-- Metadata Buku (Grid Layout) --}}

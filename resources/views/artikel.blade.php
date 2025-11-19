@@ -15,7 +15,7 @@
         {{-- Judul Halaman Dipercantik --}}
         <h2 class="text-3xl md:text-4xl font-bold text-[#05284C] mb-6 md:mb-0">Artikel</h2>
         
-        {{-- Search Bar Fungsional (dari kode dinamis Anda) --}}
+        {{-- Search Bar Fungsional --}}
         <form action="{{ route('artikel.index') }}" method="GET" class="relative w-full md:w-80">
             <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute top-1/2 left-4 -translate-y-1/2 z-10"></i>
             <input 
@@ -29,38 +29,37 @@
 
       </div>
 
-      {{-- 
-        PERUBAHAN BESAR: 
-        Grid diubah menjadi Tampilan Daftar (List View)
-        Menggunakan flex-col dan gap-6 untuk tumpukan yang rapi.
-      --}}
       <div class="flex flex-col gap-6">
         
         @forelse ($articles as $article)
-          <div class="bg-white rounded-2xl shadow-lg p-5 md:p-6 flex items-center gap-5 hover:shadow-xl hover:border-gray-300 border border-transparent transition-all duration-300">
+          {{-- 
+             PERUBAHAN: Menambahkan wire:navigate pada anchor tag (<a>).
+          --}}
+          <a href="/artikel/{{ $article->id }}" 
+             wire:navigate
+             class="group bg-white rounded-2xl shadow-lg p-5 md:p-6 flex items-center gap-5 hover:shadow-xl hover:border-gray-300 border border-transparent transition-all duration-300 cursor-pointer decoration-0">
             
             <div class="flex-shrink-0 text-center bg-gray-100 p-4 rounded-lg w-20 hidden sm:block">
                 <p class="text-3xl font-bold text-[#05284C]">{{ $article->created_at->format('d') }}</p>
                 <p class="text-sm font-semibold text-gray-600 uppercase">{{ $article->created_at->format('M') }}</p>
             </div>
 
-            <div class="flex-1 min-w-0"> {{-- min-w-0 penting untuk 'truncate' --}}
-                <h3 class="text-xl font-bold text-gray-900 truncate" title="{{ $article->judul }}">
+            <div class="flex-1 min-w-0">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-[#05284C] transition-colors truncate" title="{{ $article->judul }}">
                     {{ $article->judul }}
                 </h3>
                 <p class="text-sm text-gray-600 mb-2">Ditulis oleh: {{ $article->penulis }}</p>
                 <p class="text-sm text-gray-500 truncate hidden md:block">
-                    {{-- Menggunakan helper 'excerpt' Anda --}}
                     {{ \App\Http\Controllers\ArticleController::excerpt($article->isi_artikel, 120) }}
                 </p>
             </div>
 
             <div class="flex-shrink-0">
-                <a href="/artikel/{{ $article->id }}" class="flex items-center justify-center bg-[#05284C] text-white rounded-full w-12 h-12 hover:bg-opacity-90 transition-all" title="Baca Artikel">
+                <div class="flex items-center justify-center bg-[#05284C] text-white rounded-full w-12 h-12 group-hover:bg-opacity-90 group-hover:scale-105 transition-all shadow-md">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </a>
+                </div>
             </div>
-          </div>
+          </a>
         
         @empty
           <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
@@ -76,7 +75,7 @@
           </div>
         @endforelse
 
-      </div> {{-- Akhir dari .flex-col --}}
+      </div>
 
       {{-- Link Pagination --}}
       <div class="mt-12">

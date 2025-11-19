@@ -26,47 +26,58 @@
         </form>
       </div>
 
-      {{-- Grid Buku: 4 Kolom (Dinamis) --}}
+      {{-- Grid Buku: 4 Kolom --}}
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         
         {{-- Loop data dari controller --}}
         @forelse ($audiobooks as $audiobook)
-          <div class="bg-white rounded-2xl shadow-xl p-5 flex flex-col group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+          {{-- 
+             PERUBAHAN 1 & 2: 
+             - Mengubah div menjadi <a>.
+             - Menambahkan wire:navigate.
+             - Menambahkan class 'group' untuk hover effect.
+          --}}
+          <a href="{{ route('audiobook.show', $audiobook->id) }}" 
+             wire:navigate
+             class="group bg-white rounded-2xl shadow-xl p-5 flex flex-col h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer relative">
             
-            <!-- 1. Judul & Narator -->
             <div class="mb-4"> 
-              <h3 class="font-bold text-lg text-gray-900 truncate" title="{{ $audiobook->judul }}">
+              <h3 class="font-bold text-lg text-gray-900 truncate group-hover:text-[#05284C] transition-colors" title="{{ $audiobook->judul }}">
                 {{ $audiobook->judul }}
               </h3>
-              {{-- Menghapus "Oleh:" agar sesuai style target --}}
               <p class="text-sm text-gray-600">{{ $audiobook->pengisi_audio }}</p>
             </div>
   
-            <!-- 2. Gambar (Rasio 3:4) -->
-            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4">
+            <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-lg overflow-hidden mb-4 border border-gray-100">
               @if ($audiobook->gambar_cover)
-                {{-- Menggunakan asset() agar konsisten dengan file lain --}}
                 <img src="{{ asset('storage/' . $audiobook->gambar_cover) }}" 
                      alt="Sampul {{ $audiobook->judul }}" 
-                     class="w-full h-full object-cover">
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
               @else
-                {{-- Gambar cadangan jika tidak ada cover --}}
                 <img src="https://placehold.co/300x400/9ca3af/F1EFEC?text=Tanpa+Cover" 
                      alt="Tanpa Cover" 
-                     class="w-full h-full object-cover">
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
               @endif
+
+              {{-- Overlay Icon Play saat hover (Opsional, pemanis visual) --}}
+              <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div class="bg-white/90 p-3 rounded-full shadow-lg backdrop-blur-sm">
+                    <i data-lucide="headphones" class="w-6 h-6 text-[#05284C]"></i>
+                  </div>
+              </div>
             </div>
   
-            <!-- 3. Tombol Detail -->
-            <div class="mt-auto"> 
-              {{-- Menggunakan route() untuk konsistensi --}}
-              <a href="{{ route('audiobook.show', $audiobook->id) }}" class="block w-full bg-[#05284C] text-white text-center rounded-lg py-2.5 px-4 font-semibold text-sm hover:bg-opacity-90 transition-all duration-300">
-                Lihat Detail
-              </a>
+            <div class="mt-auto flex justify-between items-center pt-2"> 
+               <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Dengarkan</span>
+               
+               {{-- Ikon Panah (Pengganti Tombol Lihat Detail) --}}
+               <div class="flex items-center justify-center bg-[#05284C] text-white rounded-full w-10 h-10 group-hover:bg-opacity-90 group-hover:scale-110 transition-all shadow-md">
+                   <i data-lucide="arrow-right" class="w-5 h-5"></i>
+               </div>
             </div>
-          </div>
+
+          </a>
         
-        {{-- Tampil jika tidak ada audiobook --}}
         @empty
           <div class="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-12">
             <i data-lucide="mic-off" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
@@ -81,7 +92,7 @@
           </div>
         @endforelse
 
-      </div> {{-- Akhir dari .grid --}}
+      </div>
 
       {{-- Link Pagination --}}
       <div class="mt-12">

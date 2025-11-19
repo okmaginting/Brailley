@@ -1,118 +1,179 @@
 @extends('layouts.app')
 
 {{-- Mengatur judul halaman --}}
-@section('title', 'Karya')
+@section('title', 'Tulis Karya')
 
-{{-- Menambahkan CSS untuk EasyMDE (Editor Markdown) --}}
+{{-- Menambahkan CSS untuk EasyMDE --}}
 <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
-{{-- Style override agar editor menyatu dengan tema Tailwind --}}
+
+{{-- Style override --}}
 <style>
   .editor-toolbar {
-    border-top-left-radius: 0.75rem; 
-    border-top-right-radius: 0.75rem;
-    border-color: #D1D5DB; 
+    border-top-left-radius: 1rem; 
+    border-top-right-radius: 1rem;
+    border-color: #E5E7EB; 
     background-color: #F9FAFB; 
+    opacity: 1;
   }
   .CodeMirror {
-    border-bottom-left-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
-    border-color: #D1D5DB; 
-    padding: 1rem; 
-    min-height: 250px; 
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    border-color: #E5E7EB; 
+    padding: 1.5rem; 
+    min-height: 300px;
+    font-size: 1rem;
+    color: #374151;
   }
   .CodeMirror-placeholder {
     color: #9CA3AF !important;
   }
-
-  .CodeMirror-fullscreen {
+  .CodeMirror-fullscreen, .editor-toolbar.fullscreen {
     z-index: 9999 !important; 
-  }
-
-  .editor-toolbar.fullscreen {
-    z-index: 9999 !important;
   }
 </style>
 
-{{-- Mengirimkan konten unik halaman ini ke layout utama --}}
 @section('content')
   <section id="tuliskarya" class="flex justify-center items-start px-6 md:px-10 pt-[180px] pb-20">
-    <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-6xl p-14 shadow-lg flex flex-col">
-      <div class="mb-10">
-        <h2 class="text-4xl font-extrabold text-[#000]">Bagikan Karya</h2>
-        <p class="text-2xl font-semibold text-[#000] mt-1">Tulis Karya</p>
+    <div class="bg-[#F1EFEC] rounded-[40px] w-full max-w-6xl p-8 md:p-14 shadow-xl relative">
+      
+      {{-- Header --}}
+      <div class="mb-12 border-b border-gray-300 pb-6">
+        <h2 class="text-4xl font-extrabold text-[#05284C] mb-2">Bagikan Karya</h2>
+        <p class="text-lg text-gray-600">Tuangkan imajinasimu menjadi cerita yang menginspirasi.</p>
       </div>
 
-      {{-- ↓↓↓ TAMBAHKAN BLOK INI UNTUK MENAMPILKAN ERROR ↓↓↓ --}}
-      @if ($errors->any())
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
-          <strong class="font-bold">Oops! Ada yang salah:</strong>
-          <ul class="mt-2 list-disc list-inside">
-              @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-              @endforeach
-          </ul>
-        </div>
-      @endif
-      {{-- --- AKHIR BLOK --- --}}
+      {{-- Alert Error --}}
+      @if ($errors->any())
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-8 shadow-sm" role="alert">
+          <div class="flex items-center mb-2">
+             <i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>
+             <strong class="font-bold">Mohon periksa kembali:</strong>
+          </div>
+          <ul class="list-disc list-inside text-sm ml-1">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+          </ul>
+        </div>
+      @endif
 
-      <form action="{{ route('karya.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col">
+      {{-- Form --}}
+      <form action="{{ route('karya.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-8">
         @csrf
 
-        {{-- LANGKAH 1: Detail Karya (Grid 2x2) --}}
+        {{-- BAGIAN 1: Metadata Karya --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {{-- Kolom Kiri --}}
-          <div class="flex flex-col gap-5">
-            <div>
-              <label for="penulis" class="block text-gray-700 text-sm mb-2">Nama Penulis (Nama Pena)</label>
-              <input type="text" id="penulis" name="penulis" class="w-full p-3 rounded-xl border border-gray-300 shadow-lg focus:ring-0 focus:shadow-xl focus:outline-none" value="{{ old('penulis', Auth::user()?->name) }}" required />
-              <p class="text-xs text-gray-500 mt-1">Ini nama yang akan tampil di karya Anda.</p>
-            </div>
-            <div>
-              <label for="judul" class="block text-gray-700 text-sm mb-2">Judul Karya</label>
-              <input type="text" id="judul" name="judul" class="w-full p-3 rounded-xl border border-gray-300 shadow-lg focus:ring-0 focus:shadow-xl focus:outline-none" value="{{ old('judul') }}" required />
-            </div>
-          </div>
-          {{-- Kolom Kanan --}}
-          <div class="flex flex-col gap-5">
-            <div>
-              <label for="genre" class="block text-gray-700 text-sm mb-2">Genre/Tema</label>
-              <input type="text" id="genre" name="genre" class="w-full p-3 rounded-xl border border-gray-300 shadow-lg focus:ring-0 focus:shadow-xl focus:outline-none" value="{{ old('genre') }}" required />
-            </div>
-            <div>
-              <label for="gambar_cerita" class="block text-gray-700 text-sm mb-2">Cover Cerita</label>
-              <input type="file" id="gambar_cerita" name="gambar_cerita" class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-lg file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#05284C] file:text-white hover:file:bg-[#041e38] focus:ring-0 focus:shadow-xl focus:outline-none" accept="image/*" />
-              <p class="text-xs text-gray-500 mt-1">Upload gambar (JPG, PNG, dll). Opsional.</p>
-            </div>
-          </div>
-        </div>
-
-        {{-- Sinopsis (Full-width) --}}
-        <div class="flex flex-col mt-8">
-          <label for="sipnosis" class="block text-gray-700 text-sm mb-2">Sinopsis</label>
-          <textarea id="sipnosis" name="sipnosis" rows="8" class="w-full p-3 resize-none rounded-xl border border-gray-300 shadow-lg focus:ring-0 focus:shadow-xl focus:outline-none" required>{{ old('sipnosis') }}</textarea>
-        </div>
-
-
-        {{-- LANGKAH 2: Tulis Cerita atau Upload File --}}
-        <p class="text-lg font-semibold text-gray-800 mt-12 mb-4">
-          Silakan tulis cerita Anda di bawah ini, ATAU upload file .docx. (Isi salah satu)
-        </p>
-        <div class="flex flex-col mt-4">
-          <label for="isi_cerita" class="block text-gray-700 text-sm mb-3">Tulis Cerita di Sini (Mendukung Markdown)</label>
           
-          <textarea id="isi_cerita" name="isi_cerita">{{ old('isi_cerita') }}</textarea>
+          {{-- Kolom Kiri --}}
+          <div class="flex flex-col gap-6">
+            {{-- Input Penulis --}}
+            <div class="group">
+              <label for="penulis" class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
+                 <i data-lucide="user" class="w-4 h-4 text-[#05284C]"></i> Nama Penulis
+              </label>
+              <input type="text" id="penulis" name="penulis" 
+                     class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:ring-2 focus:ring-[#05284C] focus:border-transparent outline-none transition-all shadow-sm placeholder-gray-400" 
+                     value="{{ old('penulis', Auth::user()?->name) }}" 
+                     placeholder="Nama pena Anda" required />
+            </div>
+
+            {{-- Input Judul --}}
+            <div>
+              <label for="judul" class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
+                 <i data-lucide="type" class="w-4 h-4 text-[#05284C]"></i> Judul Karya
+              </label>
+              <input type="text" id="judul" name="judul" 
+                     class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:ring-2 focus:ring-[#05284C] focus:border-transparent outline-none transition-all shadow-sm placeholder-gray-400" 
+                     value="{{ old('judul') }}" 
+                     placeholder="Judul cerita yang menarik" required />
+            </div>
+          </div>
+
+          {{-- Kolom Kanan --}}
+          <div class="flex flex-col gap-6">
+            {{-- Input Genre --}}
+            <div>
+              <label for="genre" class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
+                 <i data-lucide="tag" class="w-4 h-4 text-[#05284C]"></i> Genre
+              </label>
+              <input type="text" id="genre" name="genre" 
+                     class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:ring-2 focus:ring-[#05284C] focus:border-transparent outline-none transition-all shadow-sm placeholder-gray-400" 
+                     value="{{ old('genre') }}" 
+                     placeholder="Misal: Fiksi, Horor, Petualangan" required />
+            </div>
+
+            {{-- Input File Gambar --}}
+            <div>
+              <label for="gambar_cerita" class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
+                 <i data-lucide="image" class="w-4 h-4 text-[#05284C]"></i> Cover Cerita
+              </label>
+              <input type="file" id="gambar_cerita" name="gambar_cerita" 
+                     class="w-full px-3 py-2.5 rounded-xl border border-gray-300 bg-white focus:ring-2 focus:ring-[#05284C] outline-none transition-all shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#05284C]/10 file:text-[#05284C] hover:file:bg-[#05284C]/20" 
+                     accept="image/*" />
+            </div>
+          </div>
         </div>
 
-        {{-- TAMBAHAN: Field Upload .docx --}}
-        <div class="flex flex-col mt-8">
-          <label for="upload_file" class="block text-gray-700 text-sm mb-3">Atau Upload File (.docx)</label>
-          <input type="file" id="upload_file" name="upload_file" class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-lg file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#05284C] file:text-white hover:file:bg-[#041e38] focus:ring-0 focus:shadow-xl focus:outline-none" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+        {{-- Sinopsis --}}
+        <div>
+          <label for="sipnosis" class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-2">
+             <i data-lucide="align-left" class="w-4 h-4 text-[#05284C]"></i> Sinopsis
+          </label>
+          <textarea id="sipnosis" name="sipnosis" rows="5" 
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white focus:ring-2 focus:ring-[#05284C] focus:border-transparent outline-none transition-all shadow-sm placeholder-gray-400 resize-none" 
+                    placeholder="Ceritakan ringkasan singkat karyamu..." required>{{ old('sipnosis') }}</textarea>
         </div>
 
-        {{-- Tombol Submit --}}
-        <div class="flex justify-end items-center mt-12">
-            <button type="submit" class="flex items-center gap-2 font-semibold bg-[#05284C] text-white py-2 px-6 rounded-lg shadow-xl hover:shadow-lg  hover:bg-[#041e38] transition-all duration-200 ease-in-out">
-              Kirim <i data-lucide="send" class="w-5 h-5"></i>
+        <hr class="border-gray-300 my-4">
+
+        {{-- BAGIAN 2: Isi Cerita --}}
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <label class="flex items-center gap-2 text-gray-800 font-bold text-lg">
+                    <i data-lucide="pen-tool" class="w-5 h-5 text-[#05284C]"></i> Isi Cerita
+                </label>
+                <span class="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-md">Opsi 1: Tulis Langsung</span>
+            </div>
+            
+            {{-- EasyMDE Editor --}}
+            <div class="bg-white rounded-2xl shadow-sm">
+                <textarea id="isi_cerita" name="isi_cerita">{{ old('isi_cerita') }}</textarea>
+            </div>
+        </div>
+
+        <div class="flex items-center w-full my-2">
+             <div class="flex-grow border-t border-gray-300"></div>
+             <span class="flex-shrink-0 mx-4 text-gray-400 text-sm font-semibold">ATAU</span>
+             <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        {{-- Upload File --}}
+        <div class="bg-white p-6 rounded-2xl border border-dashed border-gray-300 hover:border-[#05284C] transition-colors">
+            <div class="flex items-center justify-between mb-2">
+                <label for="upload_file" class="flex items-center gap-2 text-gray-700 font-semibold text-sm">
+                    <i data-lucide="file-up" class="w-4 h-4 text-[#05284C]"></i> Upload File (.docx)
+                </label>
+                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">Opsi 2</span>
+            </div>
+            <input type="file" id="upload_file" name="upload_file" 
+                   class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#05284C] file:text-white hover:file:bg-[#073b6e] cursor-pointer" 
+                   accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            <p class="text-xs text-gray-400 mt-2 ml-1">Mendukung file Microsoft Word (.docx)</p>
+        </div>
+
+        {{-- Tombol Aksi --}}
+        <div class="flex justify-end items-center gap-4 mt-8 pt-6 border-t border-gray-300">
+            
+            {{-- Tombol Batal dengan wire:navigate --}}
+            {{-- Pastikan route 'karya.mine' atau route tujuan pembatalan sudah benar --}}
+            <a href="{{ route('karya.mine') }}" 
+               wire:navigate
+               class="px-6 py-3 rounded-xl text-gray-600 font-bold hover:bg-gray-200 transition-all">
+               Batal
+            </a>
+
+            <button type="submit" class="flex items-center gap-2 bg-[#05284C] text-white py-3 px-8 rounded-xl font-bold shadow-lg shadow-[#05284C]/30 hover:bg-[#073b6e] hover:scale-105 transition-all duration-200">
+               <i data-lucide="send" class="w-5 h-5"></i> Kirim Karya
             </button>
         </div>
 
@@ -125,12 +186,12 @@
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Inisialisasi Editor
       var easyMDE = new EasyMDE({
-        element: document.getElementById('isi_cerita'), // Target textarea
-        spellChecker: false, // Matikan spell checker bawaan
-        minHeight: "250px",
-        placeholder: "Mulai tulis ceritamu di sini...",
-        // Toolbar yang disederhanakan
+        element: document.getElementById('isi_cerita'),
+        spellChecker: false,
+        minHeight: "300px",
+        placeholder: "Mulai tulis ceritamu di sini... Gunakan toolbar di atas untuk memformat teks.",
         toolbar: [
           "bold", "italic", "heading", "|", 
           "quote", "unordered-list", "ordered-list", "|", 
@@ -138,7 +199,7 @@
           "preview", "fullscreen", "|",
           "undo", "redo"
         ],
-        status: false, // Sembunyikan status bar (info baris/kata)
+        status: ["lines", "words"], // Tampilkan info baris & kata
       });
     });
   </script>
