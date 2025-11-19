@@ -126,7 +126,7 @@
 
         <hr class="border-gray-300 my-4">
 
-        {{-- BAGIAN 2: Isi Cerita --}}
+        {{-- BAGIAN 2: Isi Cerita (Dengan Alpine x-init timing fix) --}}
         <div>
             <div class="flex items-center justify-between mb-4">
                 <label class="flex items-center gap-2 text-gray-800 font-bold text-lg">
@@ -135,9 +135,26 @@
                 <span class="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-md">Opsi 1: Tulis Langsung</span>
             </div>
             
-            {{-- EasyMDE Editor --}}
-            <div class="bg-white rounded-2xl shadow-sm">
-                <textarea id="isi_cerita" name="isi_cerita">{{ old('isi_cerita') }}</textarea>
+            {{-- EasyMDE Editor WRAPPER (Final Timing Fix) --}}
+            <div x-data="{ editor: null }" 
+                 x-init="
+                    // Jeda kecil (10ms) untuk memastikan DOM selesai di-morph oleh Livewire
+                    setTimeout(() => {
+                        editor = new EasyMDE({
+                            element: $refs.editor, 
+                            spellChecker: false,
+                            minHeight: '300px',
+                            placeholder: 'Mulai tulis ceritamu di sini...',
+                            toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', '|', 'preview', 'fullscreen', '|', 'undo', 'redo'],
+                            status: ['lines', 'words'],
+                        });
+                    }, 10);
+                 "
+                 {{-- PENTING: Hook untuk menghancurkan instance saat komponen dihilangkan oleh Livewire --}}
+                 x-on:unmount="if (editor) editor.toTextArea()"
+                 class="bg-white rounded-2xl shadow-sm">
+                
+                <textarea id="isi_cerita" x-ref="editor" name="isi_cerita">{{ old('isi_cerita') }}</textarea>
             </div>
         </div>
 
@@ -165,7 +182,6 @@
         <div class="flex justify-end items-center gap-4 mt-8 pt-6 border-t border-gray-300">
             
             {{-- Tombol Batal dengan wire:navigate --}}
-            {{-- Pastikan route 'karya.mine' atau route tujuan pembatalan sudah benar --}}
             <a href="{{ route('karya.mine') }}" 
                wire:navigate
                class="px-6 py-3 rounded-xl text-gray-600 font-bold hover:bg-gray-200 transition-all">
@@ -185,22 +201,5 @@
 @push('scripts')
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Inisialisasi Editor
-      var easyMDE = new EasyMDE({
-        element: document.getElementById('isi_cerita'),
-        spellChecker: false,
-        minHeight: "300px",
-        placeholder: "Mulai tulis ceritamu di sini... Gunakan toolbar di atas untuk memformat teks.",
-        toolbar: [
-          "bold", "italic", "heading", "|", 
-          "quote", "unordered-list", "ordered-list", "|", 
-          "link", "|", 
-          "preview", "fullscreen", "|",
-          "undo", "redo"
-        ],
-        status: ["lines", "words"], // Tampilkan info baris & kata
-      });
-    });
   </script>
 @endpush

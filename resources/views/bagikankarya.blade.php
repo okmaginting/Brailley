@@ -81,7 +81,6 @@
         <div class="flex justify-center gap-6">
           {{-- Menambahkan wire:navigate --}}
           <a href="{{ route('karya.create') }}" 
-             wire:navigate
              class="bg-[#05284C] text-white px-8 py-4 rounded-2xl text-lg font-bold hover:bg-[#073b6e] transition-all shadow-md hover:shadow-xl flex items-center gap-3">
             <i data-lucide="pen-tool" class="w-6 h-6"></i>
             Mulai Bagikan Karya

@@ -24,6 +24,7 @@
                 <div 
                     x-data="blueSpotify('{{ Storage::url($audiobook->file_audio) }}')"
                     x-init="initPlayer()"
+                    x-on:unmount="destroyPlayer()" 
                     @mousemove.window="onDrag"
                     @mouseup.window="stopDrag"
                     @touchmove.window="onDrag"
@@ -121,7 +122,6 @@
                             <span class="text-xs text-gray-500 uppercase font-semibold tracking-wide mb-1">Narator</span>
                             <span class="font-medium text-[#05284C] text-lg">{{ $audiobook->pengisi_audio }}</span>
                         </div>
-                        {{-- Bisa ditambah kolom lain jika ada, misal: Penerbit, Tahun, dll --}}
                     </div>
                 </div>
 
@@ -132,8 +132,8 @@
             {{-- ============================ --}}
             <div class="w-full md:w-auto flex justify-center md:justify-end flex-shrink-0">
                 <div class="w-[280px] md:w-[340px]">
-                     <img src="{{ Storage::url($audiobook->gambar_cover) }}" 
-                          class="rounded-2xl shadow-xl w-full aspect-[3/4] object-cover border-4 border-white">
+                      <img src="{{ Storage::url($audiobook->gambar_cover) }}" 
+                           class="rounded-2xl shadow-xl w-full aspect-[3/4] object-cover border-4 border-white">
                 </div>
             </div>
 
@@ -145,6 +145,7 @@
 @push('scripts')
 <script src="https://unpkg.com/wavesurfer.js"></script>
 <script>
+// Pastikan script hanya berjalan sekali
 document.addEventListener("alpine:init", () => {
     Alpine.data("blueSpotify", (fileUrl) => ({
         wavesurfer: null,
@@ -156,12 +157,18 @@ document.addEventListener("alpine:init", () => {
         totalTime: "0:00",
 
         initPlayer() {
+            // 1. Cegah duplikasi player
+            if (this.wavesurfer) {
+                this.wavesurfer.destroy();
+            }
+
+            // 2. Setup WaveSurfer (Headless / Tanpa UI visual wave)
             this.wavesurfer = WaveSurfer.create({
                 container: document.createElement("div"),
-                waveColor: '#1D5BFF', // Warna wave (tidak ditampilkan visual barWidth 0, tapi butuh utk logic)
+                waveColor: '#1D5BFF',
                 progressColor: '#05284C',
                 cursorColor: 'transparent',
-                height: 0, // Hidden wave
+                height: 0,
                 backend: "webaudio",
                 barWidth: 0,
                 interact: false
@@ -169,6 +176,7 @@ document.addEventListener("alpine:init", () => {
 
             this.wavesurfer.load(fileUrl);
 
+            // 3. Event Handlers
             this.wavesurfer.on("ready", () => {
                 this.totalTime = this.format(this.wavesurfer.getDuration());
             });
@@ -185,24 +193,55 @@ document.addEventListener("alpine:init", () => {
                 this.isPlaying = false;
                 this.progress = 100;
             });
+
+            // 4. EVENT PENTING: Matikan audio saat Livewire mulai navigasi (pindah halaman)
+            this._cleanupNav = () => this.destroyPlayer();
+            document.addEventListener('livewire:navigating', this._cleanupNav, { once: true });
+            
+            // Matikan audio saat browser refresh/close tab
+            window.addEventListener('beforeunload', this._cleanupNav);
+        },
+
+        // Fungsi Pembersihan Total
+        destroyPlayer() {
+            if (this.wavesurfer) {
+                try {
+                    this.wavesurfer.pause(); // Pause dulu
+                    this.wavesurfer.destroy(); // Hancurkan instance
+                } catch (e) {
+                    console.log('Player cleanup info:', e);
+                }
+                this.wavesurfer = null;
+                this.isPlaying = false;
+            }
+        },
+
+        // Lifecycle Alpine: Dipanggil otomatis saat komponen dihapus dari DOM
+        destroy() {
+            this.destroyPlayer();
+            // Hapus event listener agar tidak menumpuk di memori
+            document.removeEventListener('livewire:navigating', this._cleanupNav);
+            window.removeEventListener('beforeunload', this._cleanupNav);
         },
 
         togglePlay() {
+            if (!this.wavesurfer) return;
             this.wavesurfer.playPause();
             this.isPlaying = !this.isPlaying;
         },
 
         skip(sec) {
+            if (!this.wavesurfer) return;
             const dur = this.wavesurfer.getDuration();
             let t = this.wavesurfer.getCurrentTime() + sec;
             t = Math.max(0, Math.min(t, dur));
-
             this.wavesurfer.setTime(t);
             this.currentTime = this.format(t);
             this.progress = (t / dur) * 100;
         },
 
         changeSpeed() {
+            if (!this.wavesurfer) return;
             const speeds = [1, 1.25, 1.5, 1.75, 2];
             const i = speeds.indexOf(this.speed);
             this.speed = speeds[(i + 1) % speeds.length];
@@ -216,7 +255,6 @@ document.addEventListener("alpine:init", () => {
             return `${m}:${s}`;
         },
 
-        /* Seek bar drag */
         startSeek(e) {
             this.isSeeking = true;
             this.seek(e);
@@ -231,18 +269,15 @@ document.addEventListener("alpine:init", () => {
         },
 
         seek(e) {
+            if (!this.wavesurfer) return;
             const bar = this.$refs.progressBar;
             const rect = bar.getBoundingClientRect();
             const x = e.touches ? e.touches[0].clientX : e.clientX;
-
             let percent = ((x - rect.left) / rect.width) * 100;
             percent = Math.max(0, Math.min(100, percent));
-
             this.progress = percent;
-
             const dur = this.wavesurfer.getDuration();
             const t = (percent / 100) * dur;
-
             this.wavesurfer.setTime(t);
             this.currentTime = this.format(t);
         }

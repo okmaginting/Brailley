@@ -23,7 +23,7 @@
           <div class="flex flex-wrap gap-4 mt-6">
             
             {{-- Tombol Dengarkan (Aksi Primer) --}}
-            <a href="{{ route('audiobook.listen', $audiobook->id) }} " wire:navigate
+            <a href="{{ route('audiobook.listen', $audiobook->id) }} "
                class="flex items-center gap-2 bg-[#05284C] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-opacity-90 transition-all shadow-md">
               <i data-lucide="headphones" class="w-5 h-5"></i>
               Dengarkan

@@ -244,7 +244,7 @@
                     </h2>
             
                     <p class="text-sm text-gray-500 mb-6">
-                        {{ __('Setelah akun dihapus, semua sumber daya dan data akan dihapus permanen. Masukkan kata sandi Anda untuk konfirmasi.') }}
+                        {{ __('Setelah akun dihapus, semua riwayat dan karya anda akan hilang permanen. Masukkan kata sandi Anda untuk konfirmasi.') }}
                     </p>
                 </div>
         
